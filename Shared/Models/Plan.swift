@@ -4,7 +4,8 @@
 
 import Foundation
 
-struct Plan {
+struct Plan : Identifiable {
+    let id = UUID()
     var Name : String
     var GroupList : [PlanGroupItem]
 }
