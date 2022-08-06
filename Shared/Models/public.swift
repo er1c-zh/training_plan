@@ -6,7 +6,12 @@ import Foundation
 import os
 
 struct Global {
-    var logger = Logger()
+    let logger = Logger()
+    let config = Config(Padding: 32)
+}
+
+struct Config {
+    var Padding: Double
 }
 
 let GlobalInst = Global()

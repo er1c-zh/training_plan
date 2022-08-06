@@ -10,6 +10,12 @@ struct Plan : Identifiable {
     var GroupList : [PlanGroupItem]
 }
 
+struct PlanFactory {
+    public func New() -> Plan {
+        Plan(Name: "", GroupList: [])
+    }
+}
+
 struct PlanGroupItem : Identifiable {
     let id = UUID()
     var Name : String // 卧推

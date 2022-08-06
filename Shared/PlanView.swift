@@ -19,11 +19,14 @@ struct PlanView: View {
     var body: some View {
         List {
             ForEach(planList) { plan in
-                PlanPreview(plan: plan, withDetail: false)
+                NavigationLink(destination: PlanDetailView(isNew: false, plan: plan)){
+                    PlanPreview(plan: plan, withDetail: false)
+                }
             }
         }
+                .navigationBarTitle("计划")
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: NavigationLink(destination: PlanDetailView()){
+                .navigationBarItems(trailing: NavigationLink(destination: PlanDetailView(isNew: true, plan: PlanFactory().New())){
                     Label("", systemImage: "plus")
                 })
     }
@@ -31,8 +34,62 @@ struct PlanView: View {
 
 // PlanDetailView 一个计划的详情
 struct PlanDetailView: View {
+    var isNew: Bool
+    var plan: Plan
     var body: some View {
-        Text("hello")
+//        HStack{
+//            Spacer().frame(width: GlobalInst.config.Padding)
+//            VStack{
+//                Spacer().frame(height: GlobalInst.config.Padding)
+                PlanDetail(plan: plan)
+        Spacer()
+//            }.background(.green)
+//            Spacer().frame(width: GlobalInst.config.Padding)
+//        }.navigationBarTitle(isNew ? "新增" : "修改")
+    }
+}
+
+struct PlanDetail: View {
+    @State var plan: Plan
+    var body: some View {
+            List {
+                Section(header: Text("基本信息")) {
+                    HStack {
+                        Text("标题")
+                        Spacer()
+                        TextField("", text: $plan.Name)
+                    }
+                }
+
+                Section(header: Text("分组"),
+                        content: {
+                            ForEach($plan.GroupList) { $group in
+                                NavigationLink(destination: PlanGroupDetail(group: group)) {
+                                    Text(group.Name)
+                                }
+                            }
+                    NavigationLink(destination: PlanGroupDetail(group: PlanGroupItem(Name: "", ItemList: []))) {
+                        Text("新增").foregroundColor(.blue)
+                    }
+                        }
+                )
+            }.navigationBarTitle(plan.Name)
+    }
+}
+
+struct PlanGroupDetail: View {
+    @State var group: PlanGroupItem
+    var body: some View {
+        List {
+            Section(header: Text("分组")) {
+                ForEach($group.ItemList) { $item in
+                    Text(String(format: "%dkg * %d * %d / %ds", item.Weight, item.CountPerRound, item.CntOfRound, item.IntervalInSeconds))
+                }
+                NavigationLink(destination: PlanGroupDetail(group: PlanGroupItem(Name: "", ItemList: []))) {
+                    Text("新增").foregroundColor(.blue)
+                }
+            }
+        }.navigationBarTitle(group.Name)
     }
 }
 

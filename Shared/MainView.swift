@@ -20,13 +20,13 @@ struct MainView: View {
     var body: some View {
         NavigationView {
             HStack {
-                Spacer().frame(width: 32)
+                Spacer().frame(width: GlobalInst.config.Padding)
                 VStack {
                     HStack {
                         Text("Today").font(Font.system(.title))
                         Spacer()
                     }
-                    Spacer().frame(height: 32)
+                    Spacer().frame(height: GlobalInst.config.Padding)
                     PlanPreview(plan: Plan(Name: "hello_plan_preview", GroupList: [
                         PlanGroupItem(Name: "深蹲", ItemList: [
                             PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
@@ -51,15 +51,32 @@ struct MainView: View {
                 }
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationBarItems(trailing: NavigationLink(destination: PlanView(planList: [
-                            Plan(Name: "plan1", GroupList: []),
-                            Plan(Name: "plan2", GroupList: []),
-                            Plan(Name: "plan3", GroupList: []),
-                            Plan(Name: "plan4", GroupList: []),
-                            Plan(Name: "plan5", GroupList: []),
+                            Plan(Name: "day_type_1", GroupList: [
+                                PlanGroupItem(Name: "深蹲", ItemList: [
+                                    PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
+                                    PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
+                                    PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
+                                ]),
+                                PlanGroupItem(Name: "卧推", ItemList: [
+                                    PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
+                                    PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
+                                    PlanItem(Weight: 55, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
+                                ]),
+                                PlanGroupItem(Name: "硬拉", ItemList: [
+                                    PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
+                                    PlanItem(Weight: 50, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
+                                    PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 120),
+                                ]),
+                            ]),
+                            Plan(Name: "day_type_2", GroupList: [
+                                PlanGroupItem(Name: "深蹲", ItemList: []),
+                                PlanGroupItem(Name: "推举", ItemList: []),
+                                PlanGroupItem(Name: "硬拉", ItemList: []),
+                            ]),
                         ])) {
                             Label("", systemImage: "square.and.pencil")
                         })
-                Spacer().frame(width: 32)
+                Spacer().frame(width: GlobalInst.config.Padding)
             }
         }
     }
