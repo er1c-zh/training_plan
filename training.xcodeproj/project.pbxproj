@@ -12,11 +12,11 @@
 		1AB7C14DB3651C80D1619F6E /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Plan.swift */; };
 		1AB7C16356D10FFF1B7D40E5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C0154EAF5FAFCA701A44 /* MainView.swift */; };
 		1AB7C18372FDCB244AFE1D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CA6877CDE8F1B0AAA165 /* Assets.xcassets */; };
-		1AB7C21AB6CF3B858C2419F5 /* PlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanView.swift */; };
+		1AB7C21AB6CF3B858C2419F5 /* PlanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */; };
 		1AB7C56793E9F0ECDAFC5492 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */; };
 		1AB7C62892CD1FBC5B64A422 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Plan.swift */; };
 		1AB7C8E72560647F823BB131 /* training.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CBE2E02E5A86473E531D /* training.xcdatamodeld */; };
-		1AB7C9832B01211DB2CC8B15 /* PlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanView.swift */; };
+		1AB7C9832B01211DB2CC8B15 /* PlanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */; };
 		1AB7CAD47461CBFA787AEADE /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C0154EAF5FAFCA701A44 /* MainView.swift */; };
 		1AB7CB1B023524D87B12C809 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CC2038A5B56142C8AD8B /* Tests_macOS.swift */; };
 		1AB7CBCFA81CDFAE9D294624 /* public.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CC20AFD79C5AFA89B64C /* public.swift */; };
@@ -53,7 +53,7 @@
 		1AB7C1E2E644E5041C2CF16F /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7C59D4F85E9ACAD90A4C0 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		1AB7C67EE1CB620D77695EFA /* Tests_iOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOSLaunchTests.swift; sourceTree = "<group>"; };
-		1AB7C6B3D3570D896160B8A3 /* PlanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanView.swift; sourceTree = "<group>"; };
+		1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanListView.swift; sourceTree = "<group>"; };
 		1AB7C76F31496C40825AA7AF /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7C7D18C0C602A6D2458D0 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
@@ -146,7 +146,7 @@
 				1AB7C1CA71DA86439AC75A97 /* trainingApp.swift */,
 				1AB7C0154EAF5FAFCA701A44 /* MainView.swift */,
 				1AB7C7D18C0C602A6D2458D0 /* Persistence.swift */,
-				1AB7C6B3D3570D896160B8A3 /* PlanView.swift */,
+				1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */,
 				1AB7C8D4472C8DDAF7DEA301 /* Models */,
 			);
 			path = Shared;
@@ -317,7 +317,7 @@
 				1AB7CD6EEC384D46BED4603D /* trainingApp.swift in Sources */,
 				1AB7CAD47461CBFA787AEADE /* MainView.swift in Sources */,
 				1AB7CCEBA60791F7088CB409 /* Persistence.swift in Sources */,
-				1AB7C9832B01211DB2CC8B15 /* PlanView.swift in Sources */,
+				1AB7C9832B01211DB2CC8B15 /* PlanListView.swift in Sources */,
 				1AB7C62892CD1FBC5B64A422 /* Plan.swift in Sources */,
 				1AB7C0A4F5514105628ADA61 /* public.swift in Sources */,
 			);
@@ -340,7 +340,7 @@
 				1AB7CF59CE34060FFD413291 /* trainingApp.swift in Sources */,
 				1AB7C16356D10FFF1B7D40E5 /* MainView.swift in Sources */,
 				1AB7CD8E48E736C5003FE7AD /* Persistence.swift in Sources */,
-				1AB7C21AB6CF3B858C2419F5 /* PlanView.swift in Sources */,
+				1AB7C21AB6CF3B858C2419F5 /* PlanListView.swift in Sources */,
 				1AB7C14DB3651C80D1619F6E /* Plan.swift in Sources */,
 				1AB7CBCFA81CDFAE9D294624 /* public.swift in Sources */,
 			);

@@ -17,6 +17,30 @@ struct MainView: View {
             animation: .default)
     private var items: FetchedResults<Item>
     @State private var selection = 1
+    @State private var planList = [
+        Plan(Name: "day_type_1", GroupList: [
+            PlanGroupItem(Group: PlanGroup(Name: "深蹲"), ItemList: [
+                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
+                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
+                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
+            ]),
+            PlanGroupItem(Group: PlanGroup(Name: "卧推"), ItemList: [
+                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
+                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
+                PlanItem(Weight: 55, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
+            ]),
+            PlanGroupItem(Group: PlanGroup(Name: "硬拉"), ItemList: [
+                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
+                PlanItem(Weight: 50, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
+                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 120),
+            ]),
+        ]),
+        Plan(Name: "day_type_2", GroupList: [
+            PlanGroupItem(Group: PlanGroup(Name: "深蹲"), ItemList: []),
+            PlanGroupItem(Group: PlanGroup(Name: "推举"), ItemList: []),
+            PlanGroupItem(Group: PlanGroup(Name: "硬拉"), ItemList: []),
+        ]),
+    ]
 
     var body: some View {
         NavigationView {
@@ -70,30 +94,7 @@ struct MainView: View {
                         .tag(1)
 
                 // 计划
-                    PlanView(planList: [
-                        Plan(Name: "day_type_1", GroupList: [
-                            PlanGroupItem(Group: PlanGroup(Name: "深蹲"), ItemList: [
-                                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-                            ]),
-                            PlanGroupItem(Group: PlanGroup(Name: "卧推"), ItemList: [
-                                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                PlanItem(Weight: 55, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-                            ]),
-                            PlanGroupItem(Group: PlanGroup(Name: "硬拉"), ItemList: [
-                                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                                PlanItem(Weight: 50, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 120),
-                            ]),
-                        ]),
-                        Plan(Name: "day_type_2", GroupList: [
-                            PlanGroupItem(Group: PlanGroup(Name: "深蹲"), ItemList: []),
-                            PlanGroupItem(Group: PlanGroup(Name: "推举"), ItemList: []),
-                            PlanGroupItem(Group: PlanGroup(Name: "硬拉"), ItemList: []),
-                        ]),
-                    ])
+                    PlanListView(planList: $planList)
                 .tabItem {
                             Label("Plan", systemImage: "tablecells.badge.ellipsis")
                         }
