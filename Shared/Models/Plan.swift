@@ -16,9 +16,13 @@ struct PlanFactory {
     }
 }
 
+struct PlanGroup {
+    var Name: String
+}
+
 struct PlanGroupItem : Identifiable {
     let id = UUID()
-    var Name : String // 卧推
+    var Group: PlanGroup
     var ItemList : [PlanItem]
 }
 

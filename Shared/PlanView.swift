@@ -24,7 +24,6 @@ struct PlanView: View {
                 }
             }
         }
-                .navigationBarTitle("计划")
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: NavigationLink(destination: PlanDetailView(isNew: true, plan: PlanFactory().New())){
                     Label("", systemImage: "plus")
@@ -65,10 +64,10 @@ struct PlanDetail: View {
                         content: {
                             ForEach($plan.GroupList) { $group in
                                 NavigationLink(destination: PlanGroupDetail(group: group)) {
-                                    Text(group.Name)
+                                    Text(group.Group.Name)
                                 }
                             }
-                    NavigationLink(destination: PlanGroupDetail(group: PlanGroupItem(Name: "", ItemList: []))) {
+                    NavigationLink(destination: PlanGroupDetail(group: PlanGroupItem(Group: PlanGroup(Name: ""), ItemList: []))) {
                         Text("新增").foregroundColor(.blue)
                     }
                         }
@@ -81,15 +80,22 @@ struct PlanGroupDetail: View {
     @State var group: PlanGroupItem
     var body: some View {
         List {
+            Section(header: Text("基本信息")) {
+                HStack {
+                    Text("标题")
+                    Spacer()
+                    TextField("", text: $group.Group.Name)
+                }
+            }
             Section(header: Text("分组")) {
                 ForEach($group.ItemList) { $item in
                     Text(String(format: "%dkg * %d * %d / %ds", item.Weight, item.CountPerRound, item.CntOfRound, item.IntervalInSeconds))
                 }
-                NavigationLink(destination: PlanGroupDetail(group: PlanGroupItem(Name: "", ItemList: []))) {
+                NavigationLink(destination: PlanGroupDetail(group: PlanGroupItem(Group: PlanGroup(Name: ""), ItemList: []))) {
                     Text("新增").foregroundColor(.blue)
                 }
             }
-        }.navigationBarTitle(group.Name)
+        }.navigationBarTitle(group.Group.Name)
     }
 }
 
@@ -117,9 +123,9 @@ struct PlanPreview: View {
 struct PlanGroupPreview: View {
     let group: PlanGroupItem
     var body: some View{
-        VStack() {
+        VStack {
             HStack{
-                Text(group.Name).bold()
+                Text(group.Group.Name).bold()
                 Spacer()
             }
             Spacer().frame(height: 4)
@@ -136,28 +142,6 @@ struct PlanGroupPreview: View {
     }
     private func getFont() -> Font {
         Font.system(size: 16).monospaced()
-    }
-}
-
-struct PlanPreview_Previews: PreviewProvider {
-    static var previews: some View {
-        PlanPreview(plan: Plan(Name: "hello_plan_preview", GroupList: [
-            PlanGroupItem(Name: "深蹲", ItemList: [
-                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-            ]),
-            PlanGroupItem(Name: "卧推", ItemList: [
-                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                PlanItem(Weight: 55, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-            ]),
-            PlanGroupItem(Name: "硬拉", ItemList: [
-                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                PlanItem(Weight: 50, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 120),
-            ]),
-        ]), withDetail: true)
     }
 }
 

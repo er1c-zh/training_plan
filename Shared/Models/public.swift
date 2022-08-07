@@ -7,7 +7,7 @@ import os
 
 struct Global {
     let logger = Logger()
-    let config = Config(Padding: 32)
+    let config = Config(Padding: 48)
 }
 
 struct Config {
