@@ -31,34 +31,63 @@ extension Plan {
 }
 
 
-struct PlanGroup {
-    var Name: String
+struct ExerciseType: Identifiable {
+    var id: String
+}
+
+extension ExerciseType {
+    struct Data {
+        var id: String = ""
+    }
+    mutating func update(from data: Data) {
+        id = data.id
+    }
+
+    static func GetExerciseType() -> [ExerciseType] {
+        [
+            ExerciseType(id: "深蹲"),
+            ExerciseType(id: "硬拉"),
+            ExerciseType(id: "推举"),
+            ExerciseType(id: "卧推"),
+        ]
+    }
+    static func Nil() -> ExerciseType {
+        ExerciseType(id: "")
+    }
+    static func WaitEdit() -> ExerciseType {
+        ExerciseType(id: "WaitEdit")
+    }
 }
 
 struct PlanGroupItem : Identifiable {
     let id : UUID
-    var Group: PlanGroup
+    var Exercise: ExerciseType
     var ItemList : [PlanItem]
 
-    init(id: UUID = UUID(), Group: PlanGroup, ItemList: [PlanItem]) {
+    init(id: UUID = UUID(), Group: ExerciseType, ItemList: [PlanItem]) {
         self.id = id
-        self.Group = Group
+        self.Exercise = Group
         self.ItemList = ItemList
     }
 }
 
 extension PlanGroupItem {
     struct Data {
-        var Group: PlanGroup = PlanGroup(Name: "")
+        var Exercise: ExerciseType = ExerciseType(id: "")
         var ItemList : [PlanItem] = []
     }
     var data: Data {
-        Data(Group: Group, ItemList: ItemList)
+        Data(Exercise: Exercise, ItemList: ItemList)
+    }
+    mutating func update(from data: Data) {
+        Exercise = data.Exercise
+        ItemList = data.ItemList
     }
 }
 
 struct PlanItem : Identifiable {
     let id = UUID()
-    var Weight, CountPerRound, CntOfRound: Int64
+    var Weight: Double
+    var CountPerRound, CntOfRound: Int64
     var IntervalInSeconds: Int64
 }

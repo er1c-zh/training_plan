@@ -8,25 +8,39 @@ import Combine
 
 // PlanView plan列表的view
 struct PlanListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-            sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-            animation: .default)
-    private var items: FetchedResults<Item>
-
     @Binding var planList: [Plan]
 
     var body: some View {
         List {
-            ForEach($planList) { $plan in
-                NavigationLink(destination: PlanView(plan: $plan)){
-                    PlanPreview(plan: plan, withDetail: false)
+            Section("Plan") {
+                ForEach($planList) { $plan in
+                    NavigationLink(destination: PlanView(plan: $plan)){
+                        PlanPreview(plan: plan, withDetail: false)
+                    }
+                }
+                        .onDelete { indies in
+                            withAnimation {
+                                planList.remove(atOffsets: indies)
+                            }
+                        }
+                HStack {
+                    Button("Add", action:
+                    {
+                        withAnimation{
+                            let tmp = Plan(Name: "New Plan", GroupList: [])
+                            planList.append(tmp)
+                        }
+                    }
+                    )
+                }
+            }
+            Section("Exercises") {
+                ForEach(ExerciseType.GetExerciseType()) { group in
+                    Text(group.id)
                 }
             }
         }
                 .navigationBarTitleDisplayMode(.inline)
-        // TODO Add Plan
     }
 }
 
@@ -35,7 +49,10 @@ struct PlanView: View {
     @Binding var plan: Plan
 
     @State private var data = Plan.Data()
-    @State private var isEditing: Bool = false;
+    @State private var isEditing: Bool = false
+
+    @State private var newGroupInst: PlanGroupItem = PlanGroupItem(Group: ExerciseType.Nil(), ItemList: [])
+
     var body: some View {
             List {
                 Section(header: Text("基本信息")) {
@@ -48,13 +65,18 @@ struct PlanView: View {
 
                 Section(header: Text("分组"),
                         content: {
-                            ForEach(plan.GroupList) { group in
-                                NavigationLink(destination: PlanGroupView(group: group)) {
-                                    Text(group.Group.Name)
+                            ForEach($plan.GroupList) { $group in
+                                NavigationLink(destination: PlanGroupView(group: $group)) {
+                                    Text(group.Exercise.id)
                                 }
                             }
-                            NavigationLink(destination: PlanGroupView(group: PlanGroupItem(Group: PlanGroup(Name: ""), ItemList: []))) {
-                                Text("新增").foregroundColor(.blue)
+                            HStack {
+                                Button("Add") {
+                                    withAnimation {
+                                        let tmp = PlanGroupItem(Group: ExerciseType.WaitEdit(), ItemList: [])
+                                        plan.GroupList.append(tmp)
+                                    }
+                                }
                             }
                         }
                 )
@@ -98,61 +120,108 @@ struct PlanViewEditor: View {
                     TextField("", text: $data.Name)
                 }
             }
-
-            Section(header: Text("分组"),
-                    content: {
-                        ForEach($data.GroupList) { $group in
-                            NavigationLink(destination: PlanGroupView(group: group)) {
-                                Text(group.Group.Name)
-                            }
-                        }
-                                .onDelete { indices in
-                                    data.GroupList.remove(atOffsets: indices)
-                                }
-                        // TODO AddItem
-                    }
-            )
         }
-        Text("implement me")
     }
 }
 
-// PlanGroupView 动作组的view
+// PlanGroupView 动作组的editor
 struct PlanGroupView: View {
-    @State var group: PlanGroupItem
+    @Binding var group : PlanGroupItem
+
+    @State private var isEditing: Bool = false
+    @State private var data: PlanGroupItem.Data = PlanGroupItem.Data()
     var body: some View {
         List {
             Section(header: Text("基本信息")) {
                 HStack {
-                    Text("标题")
+                    Text("动作")
                     Spacer()
-                    TextField("", text: $group.Group.Name)
+                    Text(group.Exercise.id)
                 }
             }
             Section(header: Text("分组")) {
                 ForEach($group.ItemList) { $item in
-                    NavigationLink(destination: PlanItemView(NeedWeight: true)) {
-                        Text(String(format: "%dkg * %d * %d / %ds", item.Weight, item.CountPerRound, item.CntOfRound, item.IntervalInSeconds))
+                    NavigationLink(destination: PlanItemView(item: $item, NeedWeight: true)) {
+                        Text(String(format: "%.1fkg * %d * %d / %ds", item.Weight, item.CountPerRound, item.CntOfRound, item.IntervalInSeconds))
                     }
                 }
-                NavigationLink(destination: PlanItemView(NeedWeight: true)) {
-                    Text("新增").foregroundColor(.blue)
-                }
             }
-        }.navigationBarTitle(group.Group.Name)
+        }
+                .navigationBarTitle(group.Exercise.id)
+                .navigationBarItems(trailing: Button("Edit") {
+                    isEditing = true
+                    data = group.data
+                })
+                .sheet(isPresented: $isEditing) {
+                    NavigationView {
+                        PlanGroupViewEditor(data: $data)
+                                .navigationBarTitle(group.Exercise.id)
+                                .toolbar {
+                                    ToolbarItem(placement: .cancellationAction) {
+                                        Button("Cancel") {
+                                            isEditing = false
+                                        }
+                                    }
+                                    ToolbarItem(placement: .confirmationAction) {
+                                        Button("Done") {
+                                            isEditing = false
+                                            group.update(from: data)
+                                        }
+                                    }
+                                }
+                    }
+                }
     }
 }
 
-// PlanGroupViewEditor 动作组的editor
 struct PlanGroupViewEditor: View {
+    @Binding var data : PlanGroupItem.Data
+    @State private var isPickingExercise : Bool = false
     var body: some View {
-        Text("implement me")
+        Form {
+            Section(header: Text("基本信息")) {
+                HStack {
+                    Text("动作")
+                    Spacer()
+                    Button(data.Exercise.id) {
+                        isPickingExercise = true
+                    }
+                }
+            }
+            Section(header: Text("分组")) {
+                ForEach($data.ItemList) { $item in
+                    NavigationLink(destination: PlanItemView(item: $item, NeedWeight: true)) {
+                        Text(String(format: "%.1fkg * %d * %d / %ds", item.Weight, item.CountPerRound, item.CntOfRound, item.IntervalInSeconds))
+                    }
+                }
+                Button("Add") {
+                    withAnimation {
+                        let tmp = PlanItem(Weight: 0, CountPerRound: 0, CntOfRound: 0, IntervalInSeconds: 0)
+                        data.ItemList.append(tmp)
+                    }
+                }
+            }
+        }
+                .sheet(isPresented: $isPickingExercise) {
+                    NavigationView {
+                        List {
+                            ForEach(ExerciseType.GetExerciseType()) { et in
+                                Button(et.id) {
+                                    isPickingExercise = false
+                                    data.Exercise = et
+                                }
+                            }
+                        }
+                    }
+                }
     }
 }
 
 // PlanItemView 一组训练的view
 struct PlanItemView: View {
+    @Binding var item : PlanItem
     var NeedWeight: Bool
+
     @State private var WeightStr = ""
     @State private var CountPerRoundStr = ""
     @State private var CntOfRoundStr = ""
@@ -170,9 +239,6 @@ struct PlanItemView: View {
                 NumberField(Prefix: "休息", Suffix: "s")
             }
         }
-    }
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        true
     }
 }
 
@@ -237,14 +303,14 @@ struct PlanGroupPreview: View {
     var body: some View{
         VStack {
             HStack{
-                Text(group.Group.Name).bold()
+                Text(group.Exercise.id).bold()
                 Spacer()
             }
             Spacer().frame(height: 4)
             ForEach(group.ItemList) { item in
                 HStack {
                     // TODO 计算每一项最长的，填充到等宽
-                    Text(String(format: "%dkg * %d * %d", item.Weight, item.CountPerRound, item.CntOfRound))
+                    Text(String(format: "%.1fkg * %d * %d", item.Weight, item.CountPerRound, item.CntOfRound))
                             .font(getFont())
                     Spacer()
                     Text(String(format: "%ds", item.IntervalInSeconds)).font(getFont())
