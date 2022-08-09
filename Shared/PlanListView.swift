@@ -285,7 +285,7 @@ struct NumberField<V>: View {
                 Text(Prefix)
             }
             TextField(Hint, value: $v, formatter: NumberFormatter())
-                    .keyboardType(.numbersAndPunctuation)
+                    .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
             if Suffix != "" {
                 Text(Suffix).frame(width: GlobalInst.config.WidthInputSuffix)
