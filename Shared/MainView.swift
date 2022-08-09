@@ -69,25 +69,7 @@ struct MainView: View {
                                 Spacer()
                             }
                             Spacer().frame(height: GlobalInst.config.Padding)
-                            PlanPreview(plan: Plan(Name: "hello_plan_preview", GroupList: [
-                                PlanGroupItem(Group: ExerciseType(id: "深蹲"), ItemList: [
-                                    PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                    PlanItem(Weight: 30, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                    PlanItem(Weight: 50, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 120),
-                                    PlanItem(Weight: 65, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-                                ]),
-                                PlanGroupItem(Group: ExerciseType(id: "卧推"), ItemList: [
-                                    PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                    PlanItem(Weight: 30, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                    PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-                                    PlanItem(Weight: 57.5, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-                                ]),
-                                PlanGroupItem(Group: ExerciseType(id: "硬拉"), ItemList: [
-                                    PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                                    PlanItem(Weight: 50, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                                    PlanItem(Weight: 65, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 120),
-                                ]),
-                            ]), withDetail: true)
+                            PlanPreview(plan: $planList[0], withDetail: true)
                             Spacer()
                             NavigationLink(destination: Text("implement me")) {
                                 Text("开始")

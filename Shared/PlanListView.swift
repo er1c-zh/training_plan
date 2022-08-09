@@ -15,7 +15,7 @@ struct PlanListView: View {
             Section("Plan") {
                 ForEach($planList) { $plan in
                     NavigationLink(destination: PlanView(plan: $plan)){
-                        PlanPreview(plan: plan, withDetail: false)
+                        PlanPreview(plan: $plan, withDetail: false)
                     }
                 }
                         .onDelete { indies in
@@ -141,9 +141,7 @@ struct PlanGroupView: View {
             }
             Section(header: Text("分组")) {
                 ForEach($group.ItemList) { $item in
-                    NavigationLink(destination: PlanItemView(item: $item, NeedWeight: true)) {
-                        Text(String(format: "%.1fkg * %d * %d / %ds", item.Weight, item.CountPerRound, item.CntOfRound, item.IntervalInSeconds))
-                    }
+                    PlanItemSingleRowView(item: $item)
                 }
             }
         }
@@ -177,49 +175,80 @@ struct PlanGroupView: View {
 struct PlanGroupViewEditor: View {
     @Binding var data : PlanGroupItem.Data
     @State private var isPickingExercise : Bool = false
+    @State private var isEditingItem : Bool = false
+    @State private var editingItemData : PlanItem.Data = PlanItem.Data()
+    @State private var editingItemIndies : IndexSet = IndexSet()
     var body: some View {
         Form {
-            Section(header: Text("基本信息")) {
-                HStack {
-                    Text("动作")
-                    Spacer()
-                    Button(data.Exercise.id) {
-                        isPickingExercise = true
+            List {
+                Section(header: Text("基本信息")) {
+                    HStack {
+                        Text("动作")
+                        Spacer()
+                        Button(data.Exercise.id) {
+                            isPickingExercise = true
+                        }
                     }
                 }
-            }
-            Section(header: Text("分组")) {
-                ForEach($data.ItemList) { $item in
-                    NavigationLink(destination: PlanItemView(item: $item, NeedWeight: true)) {
-                        Text(String(format: "%.1fkg * %d * %d / %ds", item.Weight, item.CountPerRound, item.CntOfRound, item.IntervalInSeconds))
+                Section(header: Text("分组")) {
+                    ForEach($data.ItemList) { $item in
+                        Button(action: {
+                            editingItemData = item.data
+                            isEditingItem = true
+                        }) {
+                            PlanItemSingleRowView(item: $item)
+                        }
+                                .sheet(isPresented: $isEditingItem) {
+                                    NavigationView {
+                                        PlanItemViewEditor(item: $editingItemData, NeedWeight: true)
+                                            .toolbar {
+                                                ToolbarItem(placement: .cancellationAction) {
+                                                    Button("Cancel") {
+                                                        isEditingItem = false
+                                                    }
+                                                }
+                                                ToolbarItem(placement: .confirmationAction) {
+                                                    Button("Done") {
+                                                        isEditingItem = false
+                                                        item.update(from: editingItemData)
+                                                    }
+                                                }
+                                            }
+                                    }
+                                }
                     }
-                }
-                Button("Add") {
-                    withAnimation {
-                        let tmp = PlanItem(Weight: 0, CountPerRound: 0, CntOfRound: 0, IntervalInSeconds: 0)
-                        data.ItemList.append(tmp)
+                            .onDelete { indies in
+                                withAnimation {
+                                    data.ItemList.remove(atOffsets: indies)
+                                }
+                            }
+
+                    Button("Add") {
+                        withAnimation {
+                            let tmp = PlanItem(Weight: 0, CountPerRound: 0, CntOfRound: 0, IntervalInSeconds: 0)
+                            data.ItemList.append(tmp)
+                        }
                     }
                 }
             }
         }
                 .sheet(isPresented: $isPickingExercise) {
-                    NavigationView {
-                        List {
-                            ForEach(ExerciseType.GetExerciseType()) { et in
-                                Button(et.id) {
-                                    isPickingExercise = false
-                                    data.Exercise = et
-                                }
+                    List {
+                        ForEach(ExerciseType.GetExerciseType()) { et in
+                            Button(et.id) {
+                                isPickingExercise = false
+                                data.Exercise = et
                             }
                         }
                     }
                 }
+
     }
 }
 
-// PlanItemView 一组训练的view
-struct PlanItemView: View {
-    @Binding var item : PlanItem
+// PlanItemViewEditor 一组训练的view
+struct PlanItemViewEditor: View {
+    @Binding var item : PlanItem.Data
     var NeedWeight: Bool
 
     @State private var WeightStr = ""
@@ -230,27 +259,22 @@ struct PlanItemView: View {
         Form {
             Section(header: Text("量")) {
                 if NeedWeight {
-                    NumberField(Prefix: "重量", Suffix: GlobalInst.config.WeightUnit)
+                    NumberField(v: $item.Weight, Prefix: "重量", Suffix: GlobalInst.config.WeightUnit)
                 }
-                NumberField(Prefix: "每组", Suffix: "次")
-                NumberField(Prefix: "共", Suffix: "组")
+                NumberField(v: $item.CountPerRound, Prefix: "每组", Suffix: "次")
+                NumberField(v: $item.CntOfRound, Prefix: "共", Suffix: "组")
             }
             Section(header: Text("组间休息")) {
-                NumberField(Prefix: "休息", Suffix: "s")
+                NumberField(v: $item.IntervalInSeconds, Prefix: "休息", Suffix: "s")
             }
         }
     }
 }
 
-// PlanItemViewEditor 一组训练的editor
-struct PlanItemViewEditor: View {
-    var body: some View {
-        Text("implement me")
-    }
-}
 
-struct NumberField: View {
-    @State var v = ""
+
+struct NumberField<V>: View {
+    @Binding var v: V
     var Prefix = ""
     var Suffix = ""
     var Hint = ""
@@ -260,15 +284,9 @@ struct NumberField: View {
             if Prefix != "" {
                 Text(Prefix)
             }
-            TextField(Hint, text: $v)
+            TextField(Hint, value: $v, formatter: NumberFormatter())
                     .keyboardType(.numbersAndPunctuation)
                     .multilineTextAlignment(.trailing)
-                    .onReceive(Just(v)) { newValue in
-                        let filtered = newValue.filter { "0123456789.".contains($0) }
-                        if filtered != newValue {
-                            v = filtered
-                        }
-                    }
             if Suffix != "" {
                 Text(Suffix).frame(width: GlobalInst.config.WidthInputSuffix)
             }
@@ -280,14 +298,14 @@ struct NumberField: View {
 // PlanPreview 计划的preview
 // 有详细和缩略两种格式
 struct PlanPreview: View {
-    let plan: Plan
+    @Binding var plan: Plan
     let withDetail: Bool
     var body: some View {
         if withDetail {
             VStack{
-                ForEach(plan.GroupList) { group in
+                ForEach($plan.GroupList) { $group in
                     VStack{
-                        PlanGroupPreview(group: group)
+                        PlanGroupPreview(group: $group)
                         Spacer().frame(height: 32)
                     }
                 }
@@ -299,7 +317,7 @@ struct PlanPreview: View {
 }
 
 struct PlanGroupPreview: View {
-    let group: PlanGroupItem
+    @Binding var group: PlanGroupItem
     var body: some View{
         VStack {
             HStack{
@@ -307,15 +325,22 @@ struct PlanGroupPreview: View {
                 Spacer()
             }
             Spacer().frame(height: 4)
-            ForEach(group.ItemList) { item in
-                HStack {
-                    // TODO 计算每一项最长的，填充到等宽
-                    Text(String(format: "%.1fkg * %d * %d", item.Weight, item.CountPerRound, item.CntOfRound))
-                            .font(getFont())
-                    Spacer()
-                    Text(String(format: "%ds", item.IntervalInSeconds)).font(getFont())
-                }
+            ForEach($group.ItemList) { $item in
+                PlanItemSingleRowView(item: $item)
             }
+        }
+    }
+}
+
+struct PlanItemSingleRowView: View {
+    @Binding var item : PlanItem
+    var body: some View {
+        HStack {
+            // TODO 计算每一项最长的，填充到等宽
+            Text(String(format: "%.1fkg * %d * %d", item.Weight, item.CountPerRound, item.CntOfRound))
+                    .font(getFont())
+            Spacer()
+            Text(String(format: "%ds", item.IntervalInSeconds)).font(getFont())
         }
     }
     private func getFont() -> Font {

@@ -4,10 +4,10 @@
 
 import Foundation
 
-struct Plan : Identifiable {
-    let id : UUID
-    var Name : String
-    var GroupList : [PlanGroupItem]
+struct Plan: Identifiable {
+    let id: UUID
+    var Name: String
+    var GroupList: [PlanGroupItem]
 
     init(id: UUID = UUID(), Name: String, GroupList: [PlanGroupItem]) {
         self.id = id
@@ -21,9 +21,11 @@ extension Plan {
         var Name: String = ""
         var GroupList: [PlanGroupItem] = []
     }
+
     var data: Data {
         Data(Name: Name, GroupList: GroupList)
     }
+
     mutating func update(from data: Data) {
         Name = data.Name
         GroupList = data.GroupList
@@ -39,6 +41,7 @@ extension ExerciseType {
     struct Data {
         var id: String = ""
     }
+
     mutating func update(from data: Data) {
         id = data.id
     }
@@ -51,18 +54,20 @@ extension ExerciseType {
             ExerciseType(id: "卧推"),
         ]
     }
+
     static func Nil() -> ExerciseType {
         ExerciseType(id: "")
     }
+
     static func WaitEdit() -> ExerciseType {
         ExerciseType(id: "WaitEdit")
     }
 }
 
-struct PlanGroupItem : Identifiable {
-    let id : UUID
+struct PlanGroupItem: Identifiable {
+    let id: UUID
     var Exercise: ExerciseType
-    var ItemList : [PlanItem]
+    var ItemList: [PlanItem]
 
     init(id: UUID = UUID(), Group: ExerciseType, ItemList: [PlanItem]) {
         self.id = id
@@ -74,20 +79,43 @@ struct PlanGroupItem : Identifiable {
 extension PlanGroupItem {
     struct Data {
         var Exercise: ExerciseType = ExerciseType(id: "")
-        var ItemList : [PlanItem] = []
+        var ItemList: [PlanItem] = []
     }
+
     var data: Data {
         Data(Exercise: Exercise, ItemList: ItemList)
     }
+
     mutating func update(from data: Data) {
         Exercise = data.Exercise
         ItemList = data.ItemList
     }
 }
 
-struct PlanItem : Identifiable {
+struct PlanItem: Identifiable {
     let id = UUID()
     var Weight: Double
     var CountPerRound, CntOfRound: Int64
     var IntervalInSeconds: Int64
+}
+
+extension PlanItem {
+    struct Data {
+        var Weight: Double = 0
+        var CountPerRound: Int64 = 0
+        var CntOfRound: Int64 = 0
+        var IntervalInSeconds: Int64 = 0
+    }
+
+    var data: Data {
+        Data(Weight: Weight, CountPerRound: CountPerRound, CntOfRound: CntOfRound, IntervalInSeconds: IntervalInSeconds)
+    }
+
+    mutating func update(from data: Data) {
+        Weight = data.Weight
+        CountPerRound = data.CountPerRound
+        CntOfRound = data.CntOfRound
+        IntervalInSeconds = data.IntervalInSeconds
+    }
+
 }
