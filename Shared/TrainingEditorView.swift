@@ -45,8 +45,12 @@ struct TrainingEditorView: View {
                 .navigationBarItems(trailing: Button(NSLocalizedString("save", comment: "")) {
                     let training = Training(context: GlobalInst.GetContext())
                     training.trainingID = Int64(NSDate().timeIntervalSince1970)
+                    GlobalInst.logger.info("save new(\(training.trainingID)) training (\(training))")
                     training.status = Training.Status.statusDoing.rawValue
+                    GlobalInst.logger.info("save new training: after set status")
                     training.update(from: data)
+                    GlobalInst.logger.info("save new training: after update")
+                    GlobalInst.logger.info("save new(\(training.trainingID)) training (\(training))")
                     GlobalInst.SaveContext()
                 })
                 .sheet(isPresented: $isEditing) {
@@ -123,26 +127,26 @@ struct RecordEditorView: View {
                 }.sheet(isPresented: $isPickingExerciseType) {
                             ExerciseTypePickerView(r: $pickedExerciseType, Done: {
                                 withAnimation {
-                                    isPickingExerciseType = false
                                     r.exerciseType = pickedExerciseType.rawValue
+                                    isPickingExerciseType = false
                                 }
                             })
                         }
                 Section(NSLocalizedString("quantity", comment: "")) {
                     HStack {
-                            Text(NSLocalizedString("weight", comment: ""))
-                            Spacer()
-                            Text(String(format: "%.1f", r.weight))
+                        Text(NSLocalizedString("weight", comment: ""))
+                        Spacer()
+                        Text(String(format: "%.1f", r.weight))
                         Text(NSLocalizedString("weight_kg", comment: ""))
                                 .frame(width: unitWidth())
-                            Button(action: reduceWeight) {
-                                Label("", systemImage: "minus.circle")
-                            }
-                                    .buttonStyle(BorderlessButtonStyle())
-                            Button(action: increaseWeight) {
-                                Label("", systemImage: "plus.circle")
-                            }
-                                    .buttonStyle(BorderlessButtonStyle())
+                        Button(action: reduceWeight) {
+                            Label("", systemImage: "minus.circle")
+                        }
+                                .buttonStyle(BorderlessButtonStyle())
+                        Button(action: increaseWeight) {
+                            Label("", systemImage: "plus.circle")
+                        }
+                                .buttonStyle(BorderlessButtonStyle())
                     }
                     HStack {
                         Text(NSLocalizedString("rep", comment: ""))

@@ -36,20 +36,40 @@ extension Record {
     }
 
     static func getRecordListByRecordID(recordID: Int64) -> Record? {
+        GlobalInst.logger.info("getRecordListByRecordID start")
         let fr = NSFetchRequest<Record>()
         fr.entity = Record.entity()
-        fr.predicate = NSPredicate(format: "recordID == %@", recordID)
+        fr.predicate = NSPredicate(format: "recordID == %ld", recordID)
         fr.sortDescriptors = [
-            NSSortDescriptor(keyPath: \Record.startTimestamp, ascending: true),
-            NSSortDescriptor(keyPath: \Record.order, ascending: true)
+             NSSortDescriptor(keyPath: \Record.startTimestamp, ascending: true),
+             NSSortDescriptor(keyPath: \Record.order, ascending: true)
         ]
         do {
             let context = PersistenceController.shared.container.viewContext
             let result = try context.fetch(fr)
             return result.first
         } catch {
+            if let error = error as NSError? {
+                GlobalInst.logger.error("getRecordListByRecordID fail \(error)")
+            }
             GlobalInst.logger.error("getRecordListByRecordID fail")
             return nil
+        }
+    }
+
+    static func getRecordList() -> [Record] {
+        let fr = NSFetchRequest<Record>()
+        fr.entity = Record.entity()
+        fr.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Record.recordID, ascending: true),
+        ]
+        do {
+            let context = PersistenceController.shared.container.viewContext
+            let result = try context.fetch(fr)
+            return result
+        } catch {
+            GlobalInst.logger.error("getRecordListByRecordID fail")
+            return []
         }
     }
 }
