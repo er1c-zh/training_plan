@@ -4,6 +4,7 @@
 
 import Foundation
 import os
+import CoreData
 
 struct Global {
     let logger = Logger()
@@ -12,6 +13,25 @@ struct Global {
             WidthInputSuffix: 36,
             WeightUnit: "kg"
     )
+}
+
+extension Global {
+    // CoreData
+    func GetContext() -> NSManagedObjectContext {
+        PersistenceController.shared.container.viewContext
+    }
+    func SaveContext() {
+        do {
+            try GetContext().save()
+        } catch {
+            fatalError()
+        }
+    }
+
+    // common
+    func GetFont() {
+
+    }
 }
 
 struct Config {

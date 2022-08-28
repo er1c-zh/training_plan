@@ -8,16 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		1AB7C0A4F5514105628ADA61 /* public.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CC20AFD79C5AFA89B64C /* public.swift */; };
+		1AB7C0EEDA7F92C7A91692E6 /* TrainingEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */; };
 		1AB7C11C22BC4A7680FA2CC3 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CA94A52017AD414A0D8E /* Tests_iOS.swift */; };
-		1AB7C14DB3651C80D1619F6E /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Plan.swift */; };
+		1AB7C14DB3651C80D1619F6E /* Training.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Training.swift */; };
 		1AB7C16356D10FFF1B7D40E5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C0154EAF5FAFCA701A44 /* MainView.swift */; };
 		1AB7C18372FDCB244AFE1D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CA6877CDE8F1B0AAA165 /* Assets.xcassets */; };
 		1AB7C21AB6CF3B858C2419F5 /* PlanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */; };
 		1AB7C56793E9F0ECDAFC5492 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */; };
-		1AB7C62892CD1FBC5B64A422 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Plan.swift */; };
+		1AB7C62892CD1FBC5B64A422 /* Training.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Training.swift */; };
+		1AB7C7AE45FF2925C0A7A37F /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C9379D570EB59D1E4168 /* Record.swift */; };
+		1AB7C8C787E8DD8AECA66E18 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CC9C6354D472C4343FD2 /* Localizable.strings */; };
 		1AB7C8E72560647F823BB131 /* training.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CBE2E02E5A86473E531D /* training.xcdatamodeld */; };
 		1AB7C9832B01211DB2CC8B15 /* PlanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */; };
+		1AB7C9845A2CD2BD2B0BCF1A /* TrainingEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */; };
+		1AB7CA03F07DF851A18FC0BD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CC9C6354D472C4343FD2 /* Localizable.strings */; };
 		1AB7CAD47461CBFA787AEADE /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C0154EAF5FAFCA701A44 /* MainView.swift */; };
+		1AB7CADDE878A01DAE143B55 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C9379D570EB59D1E4168 /* Record.swift */; };
 		1AB7CB1B023524D87B12C809 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CC2038A5B56142C8AD8B /* Tests_macOS.swift */; };
 		1AB7CBCFA81CDFAE9D294624 /* public.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CC20AFD79C5AFA89B64C /* public.swift */; };
 		1AB7CC8DF43F5F326B63BF3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CA6877CDE8F1B0AAA165 /* Assets.xcassets */; };
@@ -27,6 +33,8 @@
 		1AB7CDC7DB1F1F66E5F54B22 /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C67EE1CB620D77695EFA /* Tests_iOSLaunchTests.swift */; };
 		1AB7CE5EE26619A4DF393A73 /* training.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CBE2E02E5A86473E531D /* training.xcdatamodeld */; };
 		1AB7CF59CE34060FFD413291 /* trainingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C1CA71DA86439AC75A97 /* trainingApp.swift */; };
+		87E8A7A428B93AE50058DB67 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E8A7A328B93AE50058DB67 /* Exercise.swift */; };
+		87E8A7A528B93AE50058DB67 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E8A7A328B93AE50058DB67 /* Exercise.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,18 +60,22 @@
 		1AB7C1CA71DA86439AC75A97 /* trainingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = trainingApp.swift; sourceTree = "<group>"; };
 		1AB7C1E2E644E5041C2CF16F /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7C59D4F85E9ACAD90A4C0 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingEditorView.swift; sourceTree = "<group>"; };
 		1AB7C67EE1CB620D77695EFA /* Tests_iOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOSLaunchTests.swift; sourceTree = "<group>"; };
 		1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanListView.swift; sourceTree = "<group>"; };
 		1AB7C76F31496C40825AA7AF /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7C7D18C0C602A6D2458D0 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		1AB7C9379D570EB59D1E4168 /* Record.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		1AB7CA6877CDE8F1B0AAA165 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1AB7CA94A52017AD414A0D8E /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
-		1AB7CB68127FF03AF440FB1A /* Plan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Plan.swift; sourceTree = "<group>"; };
+		1AB7CB68127FF03AF440FB1A /* Training.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Training.swift; sourceTree = "<group>"; };
 		1AB7CC2038A5B56142C8AD8B /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		1AB7CC20AFD79C5AFA89B64C /* public.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = public.swift; sourceTree = "<group>"; };
+		1AB7CC9C6354D472C4343FD2 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Assets.xcassets/Localizable.strings; sourceTree = "<group>"; };
 		1AB7CD05EB1EB3DB7FD086C1 /* training.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = training.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7CEDF3D5A5E12D66C98D0 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
+		87E8A7A328B93AE50058DB67 /* Exercise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exercise.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,8 +124,10 @@
 		1AB7C8D4472C8DDAF7DEA301 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1AB7CB68127FF03AF440FB1A /* Plan.swift */,
+				1AB7CB68127FF03AF440FB1A /* Training.swift */,
 				1AB7CC20AFD79C5AFA89B64C /* public.swift */,
+				87E8A7A328B93AE50058DB67 /* Exercise.swift */,
+				1AB7C9379D570EB59D1E4168 /* Record.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -148,6 +162,8 @@
 				1AB7C7D18C0C602A6D2458D0 /* Persistence.swift */,
 				1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */,
 				1AB7C8D4472C8DDAF7DEA301 /* Models */,
+				1AB7CC9C6354D472C4343FD2 /* Localizable.strings */,
+				1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -281,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AB7C18372FDCB244AFE1D92 /* Assets.xcassets in Resources */,
+				1AB7C8C787E8DD8AECA66E18 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AB7CC8DF43F5F326B63BF3C /* Assets.xcassets in Resources */,
+				1AB7CA03F07DF851A18FC0BD /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,12 +332,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AB7C8E72560647F823BB131 /* training.xcdatamodeld in Sources */,
+				87E8A7A528B93AE50058DB67 /* Exercise.swift in Sources */,
 				1AB7CD6EEC384D46BED4603D /* trainingApp.swift in Sources */,
 				1AB7CAD47461CBFA787AEADE /* MainView.swift in Sources */,
 				1AB7CCEBA60791F7088CB409 /* Persistence.swift in Sources */,
 				1AB7C9832B01211DB2CC8B15 /* PlanListView.swift in Sources */,
-				1AB7C62892CD1FBC5B64A422 /* Plan.swift in Sources */,
+				1AB7C62892CD1FBC5B64A422 /* Training.swift in Sources */,
 				1AB7C0A4F5514105628ADA61 /* public.swift in Sources */,
+				1AB7C9845A2CD2BD2B0BCF1A /* TrainingEditorView.swift in Sources */,
+				1AB7CADDE878A01DAE143B55 /* Record.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,12 +358,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AB7CE5EE26619A4DF393A73 /* training.xcdatamodeld in Sources */,
+				87E8A7A428B93AE50058DB67 /* Exercise.swift in Sources */,
 				1AB7CF59CE34060FFD413291 /* trainingApp.swift in Sources */,
 				1AB7C16356D10FFF1B7D40E5 /* MainView.swift in Sources */,
 				1AB7CD8E48E736C5003FE7AD /* Persistence.swift in Sources */,
 				1AB7C21AB6CF3B858C2419F5 /* PlanListView.swift in Sources */,
-				1AB7C14DB3651C80D1619F6E /* Plan.swift in Sources */,
+				1AB7C14DB3651C80D1619F6E /* Training.swift in Sources */,
 				1AB7CBCFA81CDFAE9D294624 /* public.swift in Sources */,
+				1AB7C0EEDA7F92C7A91692E6 /* TrainingEditorView.swift in Sources */,
+				1AB7C7AE45FF2925C0A7A37F /* Record.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

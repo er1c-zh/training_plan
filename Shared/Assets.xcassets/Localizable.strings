@@ -1,0 +1,23 @@
+/****************************************************************************/
+/* Localization file */
+
+// exercise
+"bench_press" = "卧推";
+"squat" = "深蹲";
+"deadlift" = "硬拉";
+"military_press" = "推举";
+"unknown_exercise_type" = "未知动作";
+
+// UI
+"start_training" = "开始";
+"create_training" = "创建";
+
+// RecordEditor
+"exercise_type" = "动作";
+
+
+// common
+"add" = "新增";
+"edit" = "编辑";
+"save" = "保存";
+"cancel" = "取消";

@@ -12,6 +12,10 @@ import SwiftUI
 struct trainingApp: App {
     let persistenceController = PersistenceController.shared
 
+    init() {
+        ValueTransformer.setValueTransformer(recordListTransformer(), forName: .recordListTransformer)
+    }
+
     var body: some Scene {
         WindowGroup {
             MainView()

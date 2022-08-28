@@ -10,42 +10,19 @@ import SwiftUI
 import CoreData
 
 struct MainView: View {
-    @Environment(\.managedObjectContext) private var viewContext
+    private var didChange = NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)  //the publisher
+    @State private var refreshing = false
 
-    @FetchRequest(
-            sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-            animation: .default)
-    private var items: FetchedResults<Item>
     @State private var selection = 1
-    @State private var planList = [
-        Plan(Name: "day_type_1", GroupList: [
-            PlanGroupItem(Group: ExerciseType(id: "深蹲"), ItemList: [
-                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-            ]),
-            PlanGroupItem(Group: ExerciseType(id: "卧推"), ItemList: [
-                PlanItem(Weight: 20, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                PlanItem(Weight: 55, CountPerRound: 5, CntOfRound: 4, IntervalInSeconds: 120),
-            ]),
-            PlanGroupItem(Group: ExerciseType(id: "硬拉"), ItemList: [
-                PlanItem(Weight: 40, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 60),
-                PlanItem(Weight: 50, CountPerRound: 5, CntOfRound: 1, IntervalInSeconds: 60),
-                PlanItem(Weight: 60, CountPerRound: 5, CntOfRound: 2, IntervalInSeconds: 120),
-            ]),
-        ]),
-        Plan(Name: "day_type_2", GroupList: [
-            PlanGroupItem(Group: ExerciseType(id: "深蹲"), ItemList: []),
-            PlanGroupItem(Group: ExerciseType(id: "推举"), ItemList: []),
-            PlanGroupItem(Group: ExerciseType(id: "硬拉"), ItemList: []),
-        ]),
-    ]
-    @State private var groupList = [
-        ExerciseType(id: "深蹲"),
-        ExerciseType(id: "卧推"),
-        ExerciseType(id: "硬拉"),
-    ]
+    @State private var training: Training?
+
+    init() {
+        loadTraining()
+    }
+
+    func loadTraining() {
+        training = Training.getDoingTraining()
+    }
 
     var body: some View {
             TabView(selection: $selection) {
@@ -69,10 +46,23 @@ struct MainView: View {
                                 Spacer()
                             }
                             Spacer().frame(height: GlobalInst.config.Padding)
-                            PlanPreview(plan: $planList[0], withDetail: true)
+                            if training != nil {
+                                // TODO use workout view
+                                NavigationLink(destination: TrainingEditorView()) {
+                                    Text(NSLocalizedString("start_training", comment: ""))
+                                }
+                            } else {
+                                NavigationLink(destination: TrainingEditorView()) {
+                                    Text(NSLocalizedString("create_training", comment: ""))
+                                }
+                            }
                             Spacer()
-                            NavigationLink(destination: Text("implement me")) {
-                                Text("开始")
+
+                            Button("del") {
+                                if let training = training {
+                                    GlobalInst.GetContext().delete(training)
+                                    GlobalInst.SaveContext()
+                                }
                             }
                             Spacer().frame(height: GlobalInst.config.Padding)
                         }
@@ -84,11 +74,23 @@ struct MainView: View {
                             Label("Today", systemImage: "play")
                         }
                         .tag(1)
+                .onReceive(didChange) { _ in
+                    GlobalInst.logger.info("refresh start, training: \(training == nil)")
+                    if training != nil {
+                        GlobalInst.logger.info("refresh start, training: \(training!.trainingID)")
+                    }
+                    loadTraining()
+                    refreshing.toggle()
+                    GlobalInst.logger.info("refresh done, training: \(training == nil)")
+                    if training != nil {
+                        GlobalInst.logger.info("refresh done, training: \(training!.trainingID)")
+                    }
+                }
 
 
                 // 计划
                 NavigationView{
-                    PlanListView(planList: $planList)
+                    Text("implement me")
                 }
                         .tabItem {
                             Label("Plan", systemImage: "tablecells.badge.ellipsis")
