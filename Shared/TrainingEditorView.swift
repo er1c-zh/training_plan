@@ -128,9 +128,74 @@ struct RecordEditorView: View {
                                 }
                             })
                         }
+                Section(NSLocalizedString("quantity", comment: "")) {
+                    HStack {
+                            Text(NSLocalizedString("weight", comment: ""))
+                            Spacer()
+                            Text(String(format: "%.1f", r.weight))
+                        Text(NSLocalizedString("weight_kg", comment: ""))
+                                .frame(width: unitWidth())
+                            Button(action: reduceWeight) {
+                                Label("", systemImage: "minus.circle")
+                            }
+                                    .buttonStyle(BorderlessButtonStyle())
+                            Button(action: increaseWeight) {
+                                Label("", systemImage: "plus.circle")
+                            }
+                                    .buttonStyle(BorderlessButtonStyle())
+                    }
+                    HStack {
+                        Text(NSLocalizedString("rep", comment: ""))
+                        Spacer()
+                        Text(String(format: "%d", r.rep))
+                        Text(NSLocalizedString("rep_unit", comment: ""))
+                                .frame(width: unitWidth())
+                        Button(action: { if r.rep > 0 {r.rep -= 1} }) {
+                            Label("", systemImage: "minus.circle")
+                        }
+                                .buttonStyle(BorderlessButtonStyle())
+                        Button(action: { r.rep += 1 }) {
+                            Label("", systemImage: "plus.circle")
+                        }
+                                .buttonStyle(BorderlessButtonStyle())
+                    }
+                    HStack {
+                        Text(NSLocalizedString("rest_between_intervals", comment: ""))
+                        Spacer()
+                        Text(String(format: "%d", r.restInSec))
+                        Text(NSLocalizedString("rest_between_intervals_unit", comment: ""))
+                                .frame(width: unitWidth())
+                        Button(action: {
+                            r.restInSec -= 30
+                            if r.restInSec < 0 {
+                                r.restInSec = 0
+                            }
+                        }) {
+                            Label("", systemImage: "minus.circle")
+                        }
+                                .buttonStyle(BorderlessButtonStyle())
+                        Button(action: { r.restInSec += 30 }) {
+                            Label("", systemImage: "plus.circle")
+                        }
+                                .buttonStyle(BorderlessButtonStyle())
+                    }
+                }
             }
         }
                 .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func increaseWeight() {
+        r.weight += 0.5
+    }
+    private func reduceWeight() {
+        r.weight -= 0.5
+        if r.weight <= 0 {
+            r.weight = 0
+        }
+    }
+    private func unitWidth() -> CGFloat {
+        32
     }
 }
 

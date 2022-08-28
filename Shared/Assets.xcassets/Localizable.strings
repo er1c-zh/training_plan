@@ -14,7 +14,13 @@
 
 // RecordEditor
 "exercise_type" = "动作";
-
+"quantity" = "数量";
+"weight" = "重量";
+"weight_kg" = "kg";
+"rep" = "重复";
+"rep_unit" = "次";
+"rest_between_intervals" = "组件休息";
+"rest_between_intervals_unit" = "秒";
 
 // common
 "add" = "新增";
