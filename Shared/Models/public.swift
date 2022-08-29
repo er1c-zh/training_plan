@@ -28,6 +28,10 @@ extension Global {
         }
     }
 
+    func GetMillisecondTimestamp() -> Int64 {
+        Int64(Date().timeIntervalSince1970 * 1000000)
+    }
+
     // common
     func GetFont() {
 

@@ -95,7 +95,7 @@ extension NSValueTransformerName {
 extension Training {
 
     struct Data {
-        var recordList: [Record.Data]
+        var recordList: [Record.Data] = []
     }
 
     var data: Data {
@@ -165,8 +165,7 @@ extension Training {
             NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
         ]
         do {
-            let context = PersistenceController.shared.container.viewContext
-            let result = try context.fetch(fr)
+            let result = try GlobalInst.GetContext().fetch(fr)
             GlobalInst.logger.info("getDoingTraining result \(result)")
             GlobalInst.logger.info("getDoingTraining result \(result.first == nil)")
             if result.count > 0 {
@@ -180,6 +179,82 @@ extension Training {
         }
     }
 
+    static private var strategy: Training = loadStrategyTraining()
+
+    public static func getStrategy() -> Training {
+        // format strategy
+        // add unknown exerciseType
+        // remove duplicate exerciseType
+        var newRecordList: [Record] = []
+        var i = 0
+        var j = 0
+        var isDelta = false
+        let exerciseTypeList = ExerciseType.getAllExerciseType()
+        let oldRecordList: [Record] = strategy.recordList == nil ? [] : strategy.recordList!
+
+        while i < exerciseTypeList.count && j < oldRecordList.count {
+            if exerciseTypeList[i].rawValue > oldRecordList[j].exerciseType {
+                isDelta = true
+                j += 1
+            } else if exerciseTypeList[i].rawValue < oldRecordList[j].exerciseType {
+                isDelta = true
+                let tmp = Record.init(context: GlobalInst.GetContext())
+                tmp.recordID = GlobalInst.GetMillisecondTimestamp()
+                tmp.exerciseType = exerciseTypeList[i].rawValue
+                newRecordList.append(tmp)
+                i += 1
+            } else {
+                newRecordList.append(oldRecordList[j])
+                i += 1
+                j += 1
+            }
+        }
+
+        while i < exerciseTypeList.count {
+            isDelta = true
+            let tmp = Record.init(context: GlobalInst.GetContext())
+            tmp.recordID = GlobalInst.GetMillisecondTimestamp()
+            tmp.exerciseType = exerciseTypeList[i].rawValue
+            newRecordList.append(tmp)
+            i += 1
+        }
+        if j < oldRecordList.count {
+            isDelta = true
+        }
+
+        if isDelta {
+            strategy.recordList = newRecordList
+            GlobalInst.SaveContext()
+        }
+
+        return strategy
+    }
+
+    static private func loadStrategyTraining() -> Training {
+        let fr = NSFetchRequest<Training>()
+        fr.entity = Training.entity()
+        fr.fetchLimit = 1
+        fr.predicate = NSPredicate(format: "status == %d", Int(Training.Status.statusTemplate.rawValue))
+        fr.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
+        ]
+        var strategyTraining: Training
+        do {
+            let result = try GlobalInst.GetContext().fetch(fr)
+            if result.count > 0 {
+                strategyTraining = result[0]
+            } else {
+                strategyTraining = Training.init(context: GlobalInst.GetContext())
+                strategyTraining.trainingID = -1 /* TODO fix this */
+                strategyTraining.status = Training.Status.statusTemplate.rawValue
+                GlobalInst.SaveContext()
+            }
+        } catch {
+            fatalError()
+        }
+        return strategyTraining
+    }
+
     static func getTrainingList() -> [Training] {
         let fr = NSFetchRequest<Training>()
         fr.entity = Training.entity()
@@ -187,8 +262,7 @@ extension Training {
             NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
         ]
         do {
-            let context = PersistenceController.shared.container.viewContext
-            let result = try context.fetch(fr)
+            let result = try GlobalInst.GetContext().fetch(fr)
             GlobalInst.logger.info("getDoingTraining result \(result)")
             return result
         } catch {

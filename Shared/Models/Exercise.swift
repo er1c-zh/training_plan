@@ -29,7 +29,6 @@ extension ExerciseType : Identifiable {
     }
 
     static func descByVal(val: Int16) -> String {
-        GlobalInst.logger.info("descByVal \(val)")
         let e = ExerciseType(rawValue: val)
         var et: ExerciseType
         if e != nil {
@@ -37,7 +36,6 @@ extension ExerciseType : Identifiable {
         } else {
             et = ExerciseType.Unknown
         }
-        GlobalInst.logger.info("descByVal \(val), \(et.Desc())")
         return et.Desc()
     }
 
@@ -45,7 +43,6 @@ extension ExerciseType : Identifiable {
         if let v = ExerciseType.descMap[self] {
             return v
         } else {
-            GlobalInst.logger.info("unknown_exercise_type")
             return NSLocalizedString("unknown_exercise_type", comment: "")
         }
     }

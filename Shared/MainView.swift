@@ -87,7 +87,7 @@ struct MainView: View {
 
             // 计划
             NavigationView {
-                Text("implement me")
+                StrategyView()
             }
                     .tabItem {
                         Label("Plan", systemImage: "tablecells.badge.ellipsis")

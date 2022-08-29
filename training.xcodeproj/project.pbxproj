@@ -14,6 +14,7 @@
 		1AB7C16356D10FFF1B7D40E5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C0154EAF5FAFCA701A44 /* MainView.swift */; };
 		1AB7C18372FDCB244AFE1D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CA6877CDE8F1B0AAA165 /* Assets.xcassets */; };
 		1AB7C21AB6CF3B858C2419F5 /* PlanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */; };
+		1AB7C33D201411CAE48B07F4 /* StrategyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C92B4C31A7E037BD7E58 /* StrategyView.swift */; };
 		1AB7C56793E9F0ECDAFC5492 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */; };
 		1AB7C62892CD1FBC5B64A422 /* Training.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Training.swift */; };
 		1AB7C7AE45FF2925C0A7A37F /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C9379D570EB59D1E4168 /* Record.swift */; };
@@ -68,6 +69,7 @@
 		1AB7C76F31496C40825AA7AF /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7C7D18C0C602A6D2458D0 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		1AB7C92B4C31A7E037BD7E58 /* StrategyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrategyView.swift; sourceTree = "<group>"; };
 		1AB7C9379D570EB59D1E4168 /* Record.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		1AB7CA6877CDE8F1B0AAA165 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1AB7CA94A52017AD414A0D8E /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				1AB7CC9C6354D472C4343FD2 /* Localizable.strings */,
 				1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */,
 				1AB7C5A1C6158B55DB4B7EE6 /* DebugView.swift */,
+				1AB7C92B4C31A7E037BD7E58 /* StrategyView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 				1AB7C0EEDA7F92C7A91692E6 /* TrainingEditorView.swift in Sources */,
 				1AB7C7AE45FF2925C0A7A37F /* Record.swift in Sources */,
 				1AB7CFCDB10ADB592DF31E55 /* DebugView.swift in Sources */,
+				1AB7C33D201411CAE48B07F4 /* StrategyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

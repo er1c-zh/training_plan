@@ -7,7 +7,7 @@ import CoreData
 
 extension Record {
     struct Data : Identifiable {
-        var id: Int64 = Int64(Date().timeIntervalSince1970) * 1000
+        var id: Int64 = GlobalInst.GetMillisecondTimestamp()
         var exerciseType: Int16 = ExerciseType.Unknown.rawValue
         var rep: Int64 = 0
         var tag: String? = ""
@@ -23,6 +23,7 @@ extension Record {
     }
 
     func update(from data: Data) {
+        GlobalInst.logger.info("Record.update before (\(self.recordID)) (\(self)) , data \(data.id)")
         exerciseType = data.exerciseType
         rep = data.rep
         tag = data.tag
@@ -31,8 +32,7 @@ extension Record {
         weightUnit = data.weightUnit
         recordID = data.id
         restInSec = data.restInSec
-
-        GlobalInst.SaveContext()
+        GlobalInst.logger.info("Record.update after (\(self.recordID)) (\(self)) , data \(data.id)")
     }
 
     static func getRecordListByRecordID(recordID: Int64) -> Record? {
