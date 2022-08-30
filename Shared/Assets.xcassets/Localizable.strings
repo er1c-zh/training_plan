@@ -16,6 +16,10 @@
 "title_strategy" = "策略";
 "max_weight" = "正式组重量";
 
+// TrainingEditor
+"init_training" = "自动生成";
+"init_training_title" = "选择运动顺序";
+
 // RecordEditor
 "exercise_type" = "动作";
 "quantity" = "数量";

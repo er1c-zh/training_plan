@@ -28,12 +28,10 @@ import CoreData
 
 public final class recordListTransformer : ValueTransformer {
     public override class func transformedValueClass() -> AnyClass {
-        GlobalInst.logger.info("recordListTransformer transformedValueClass")
-        return NSData.self
+        NSData.self
     }
 
     public override func transformedValue(_ value: Any?) -> Any? {
-        GlobalInst.logger.info("recordListTransformer transformedValue")
         var result: String = ""
         if let typed = value as? [Record] {
             var idList:  [String] = []
@@ -45,13 +43,10 @@ public final class recordListTransformer : ValueTransformer {
             result = ""
         }
 
-        GlobalInst.logger.info("recordListTransformer \(result)")
-
         return result.data(using: .utf8)
     }
 
     public override func reverseTransformedValue(_ value: Any?) -> Any? {
-        GlobalInst.logger.info("recordListTransformer reverseTransformedValue")
         var result: [Record]? = nil
         if let data = value as? Data {
             let typed = String(data: data, encoding: .utf8)
@@ -68,21 +63,12 @@ public final class recordListTransformer : ValueTransformer {
                     }
                 }
                 result = recordList
-            } else {
-                GlobalInst.logger.info("reverseTransformedValue convert to string fail")
             }
-        } else {
-            GlobalInst.logger.info("reverseTransformedValue convert to Data fail")
-        }
-        GlobalInst.logger.info("reverseTransformedValue \(result == nil)")
-        if let result = result {
-            GlobalInst.logger.info("reverseTransformedValue \(result)")
         }
         return result
     }
 
     public override class func allowsReverseTransformation() -> Bool {
-        GlobalInst.logger.info("recordListTransformer allowsReverseTransformation")
         return true
     }
 }
@@ -120,8 +106,6 @@ extension Training {
 
         var tmpList: [Record] = []
 
-        GlobalInst.logger.info("Training update start")
-
         data.recordList.forEach { rd in
             if let r = dicRecordID2Record[rd.id] {
                 r.update(from: rd)
@@ -134,18 +118,13 @@ extension Training {
             }
         }
 
-        GlobalInst.logger.info("Training update finish update and create")
-
         recordList?.forEach { r in
             if dicRecordID2RecordData[r.recordID] == nil {
                 GlobalInst.GetContext().delete(r)
             }
         }
 
-        GlobalInst.logger.info("Training update finish delete")
-
         recordList = tmpList
-        GlobalInst.logger.info("Training update done")
     }
 
     enum Status: Int16 {
@@ -166,8 +145,6 @@ extension Training {
         ]
         do {
             let result = try GlobalInst.GetContext().fetch(fr)
-            GlobalInst.logger.info("getDoingTraining result \(result)")
-            GlobalInst.logger.info("getDoingTraining result \(result.first == nil)")
             if result.count > 0 {
                 return result[0]
             } else  {
@@ -263,7 +240,6 @@ extension Training {
         ]
         do {
             let result = try GlobalInst.GetContext().fetch(fr)
-            GlobalInst.logger.info("getDoingTraining result \(result)")
             return result
         } catch {
             GlobalInst.logger.error("getDoingTraining fail")

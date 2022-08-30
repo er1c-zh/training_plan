@@ -7,11 +7,19 @@ import CoreData
 import Combine
 import SwiftUI
 
+enum TrainingEditorViewSheetID: Identifiable {
+    case exercisePicker, editor
+    var id: Int {
+        hashValue
+    }
+}
+
 struct TrainingEditorView: View {
     @State private var data: Training.Data = Training.Data(recordList: [])
     @State private var recordData: Record.Data = Record.Data()
+    @State private var isCreating: Bool = false
     @State private var isEditing: Bool = false
-    @State private var idIsEditing: Int64 = 0
+    @State private var exerciseTypeListPicked: [ExerciseType] = []
 
     var body: some View {
         List {
@@ -40,30 +48,54 @@ struct TrainingEditorView: View {
                     }
                 }
             }
+            Button(NSLocalizedString("init_training", comment: "")) {
+                exerciseTypeListPicked = []
+                withAnimation {
+                    isCreating = true
+                }
+            }
+            EmptyView()
+
         }
                 .navigationBarTitle(LocalizedStringKey("create_training"))
                 .navigationBarItems(trailing: Button(NSLocalizedString("save", comment: "")) {
                     let training = Training(context: GlobalInst.GetContext())
                     training.trainingID = Int64(NSDate().timeIntervalSince1970)
-                    GlobalInst.logger.info("save new(\(training.trainingID)) training (\(training))")
                     training.status = Training.Status.statusDoing.rawValue
-                    GlobalInst.logger.info("save new training: after set status")
                     training.update(from: data)
-                    GlobalInst.logger.info("save new training: after update")
-                    GlobalInst.logger.info("save new(\(training.trainingID)) training (\(training))")
                     GlobalInst.SaveContext()
                 })
+                .sheet(isPresented: $isCreating) {
+                    NavigationView {
+                        MultipleExerciseTypePickerView(r: $exerciseTypeListPicked)
+                                .navigationBarTitle(NSLocalizedString("init_training_title", comment: ""), displayMode: .inline)
+                                .toolbar {
+                                    ToolbarItem(placement: .cancellationAction) {
+                                        Button(NSLocalizedString("cancel", comment: "")) {
+                                            isCreating = false
+                                        }
+                                    }
+                                    ToolbarItem(placement: .confirmationAction) {
+                                        Button(NSLocalizedString("save", comment: "")) {
+                                            withAnimation {
+                                                isCreating = false
+                                            }
+                                        }
+                                    }
+                                }
+                    }
+                }
                 .sheet(isPresented: $isEditing) {
                     NavigationView {
                         RecordEditorView(r: $recordData)
                                 .toolbar {
                                     ToolbarItem(placement: .cancellationAction) {
-                                        Button("Cancel") {
+                                        Button(NSLocalizedString("cancel", comment: "")) {
                                             isEditing = false
                                         }
                                     }
                                     ToolbarItem(placement: .confirmationAction) {
-                                        Button("Done") {
+                                        Button(NSLocalizedString("save", comment: "")) {
                                             withAnimation {
                                                 for (idx, r) in data.recordList.enumerated() {
                                                     if r.id == recordData.id {
@@ -124,7 +156,8 @@ struct RecordEditorView: View {
                             }
                         }
                     }
-                }.sheet(isPresented: $isPickingExerciseType) {
+                }
+                        .sheet(isPresented: $isPickingExerciseType) {
                             ExerciseTypePickerView(r: $pickedExerciseType, Done: {
                                 withAnimation {
                                     r.exerciseType = pickedExerciseType.rawValue
@@ -154,7 +187,11 @@ struct RecordEditorView: View {
                         Text(String(format: "%d", r.rep))
                         Text(NSLocalizedString("rep_unit", comment: ""))
                                 .frame(width: unitWidth())
-                        Button(action: { if r.rep > 0 {r.rep -= 1} }) {
+                        Button(action: {
+                            if r.rep > 0 {
+                                r.rep -= 1
+                            }
+                        }) {
                             Label("", systemImage: "minus.circle")
                         }
                                 .buttonStyle(BorderlessButtonStyle())
@@ -192,20 +229,22 @@ struct RecordEditorView: View {
     private func increaseWeight() {
         r.weight += 0.5
     }
+
     private func reduceWeight() {
         r.weight -= 0.5
         if r.weight <= 0 {
             r.weight = 0
         }
     }
+
     private func unitWidth() -> CGFloat {
         32
     }
 }
 
-struct ExerciseTypePickerView : View {
+struct ExerciseTypePickerView: View {
     @Binding var r: ExerciseType
-    var Done : () -> ()
+    var Done: () -> ()
     var body: some View {
         List {
             ForEach(ExerciseType.getAllExerciseType()) { t in
@@ -215,5 +254,41 @@ struct ExerciseTypePickerView : View {
                 }
             }
         }
+    }
+}
+
+struct MultipleExerciseTypePickerView: View {
+    @Binding var r: [ExerciseType]
+    var body: some View {
+        List {
+            ForEach(ExerciseType.getAllExerciseType()) { t in
+                HStack {
+                    Button(t.Desc()) {
+                        withAnimation {
+                            if getIndex(e: t) >= 0 {
+                                r.remove(at: getIndex(e: t))
+                            } else {
+                                r.append(t)
+                            }
+                        }
+                    }
+                    if getIndex(e: t) >= 0 {
+                        Spacer()
+                        Text(String(format: "%d", getIndex(e: t) + 1))
+                    }
+                }
+            }
+        }
+    }
+
+    func getIndex(e: ExerciseType) -> Int {
+        var i = 0
+        while i < r.count {
+            if r[i] == e {
+                return i
+            }
+            i += 1
+        }
+        return -1
     }
 }
