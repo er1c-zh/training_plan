@@ -6,6 +6,8 @@
 "squat" = "深蹲";
 "deadlift" = "硬拉";
 "military_press" = "推举";
+"bent_over_row" = "划船";
+"power_clean" = "高翻";
 "unknown_exercise_type" = "未知动作";
 
 // UI

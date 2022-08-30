@@ -13,6 +13,8 @@ enum ExerciseType : Int16 {
     case Squat = 2
     case Deadlift = 3
     case MilitaryPress = 4
+    case BentOverRow = 5
+    case PowerClean = 6
 }
 
 extension ExerciseType : Identifiable {
@@ -21,11 +23,13 @@ extension ExerciseType : Identifiable {
         .BenchPress: NSLocalizedString("bench_press", comment: ""),
         .Squat: NSLocalizedString("squat", comment: ""),
         .Deadlift: NSLocalizedString("deadlift", comment: ""),
-        .MilitaryPress: NSLocalizedString("military_press", comment: "")
+        .MilitaryPress: NSLocalizedString("military_press", comment: ""),
+        .BentOverRow: NSLocalizedString("bent_over_row", comment: ""),
+        .PowerClean: NSLocalizedString("power_clean", comment: "")
     ]
 
     static func getAllExerciseType() -> [ExerciseType] {
-        [.BenchPress, .Squat, .Deadlift, .MilitaryPress]
+        [.BenchPress, .Squat, .Deadlift, .MilitaryPress, .BentOverRow, .PowerClean]
     }
 
     static func descByVal(val: Int16) -> String {

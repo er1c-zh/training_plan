@@ -4,6 +4,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 struct StrategyView: View {
     @State private var strategy: Training = Training.getStrategy()
@@ -19,10 +20,14 @@ struct StrategyView: View {
                         Text(String(format: "%@", ExerciseType.descByVal(val: r.exerciseType)))
                         Spacer()
                         if !isEditing {
-                            Text(String(format: "%.1f", r.weight))
+                            Text(String(format: "%.0f", r.weight))
                         } else {
-                            // TODO limit to .5
-                            TextField("", value: $r.weight, format: .number.precision(.fractionLength(1)))
+                            TextField("", value: $r.weight, format: .number.precision(.fractionLength(0)))
+                                    .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+                                        if let textField = obj.object as? UITextField {
+                                            textField.selectedTextRange = textField.textRange(from: textField.beginningOfDocument, to: textField.endOfDocument)
+                                        }
+                                    }
                                     .keyboardType(.decimalPad)
                                     .multilineTextAlignment(.trailing)
                         }
