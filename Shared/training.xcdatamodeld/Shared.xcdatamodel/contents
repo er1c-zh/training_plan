@@ -15,6 +15,7 @@
         <attribute name="weight" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="weightUnit" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="Strategy" representedClassName="Strategy" syncable="YES" codeGenerationType="class"/>
     <entity name="Training" representedClassName="Training" syncable="YES" codeGenerationType="class">
         <attribute name="recordList" optional="YES" attributeType="Transformable" valueTransformerName="recordListTransformer" customClassName="[Record]"/>
         <attribute name="status" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -23,5 +24,6 @@
     <elements>
         <element name="Record" positionX="-63" positionY="-18" width="128" height="224"/>
         <element name="Training" positionX="-54" positionY="63" width="128" height="74"/>
+        <element name="Strategy" positionX="-54" positionY="81" width="128" height="29"/>
     </elements>
 </model>

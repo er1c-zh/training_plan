@@ -5,6 +5,7 @@
 import Foundation
 import os
 import CoreData
+import SwiftUI
 
 struct Global {
     let logger = Logger()
@@ -33,8 +34,8 @@ extension Global {
     }
 
     // common
-    func GetFont() {
-
+    func GetFont() -> Font {
+        Font.system(.body).monospaced()
     }
 }
 

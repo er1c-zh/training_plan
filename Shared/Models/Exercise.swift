@@ -50,4 +50,32 @@ extension ExerciseType : Identifiable {
             return NSLocalizedString("unknown_exercise_type", comment: "")
         }
     }
+
+    func MinWeight() -> Double {
+        switch self {
+        case .Deadlift:
+            return 60
+        default:
+            return 20
+        }
+    }
+
+    func countOfWarmUpSet() -> Int {
+        switch self {
+        case .Deadlift:
+            return 2
+        default:
+            return 3
+        }
+    }
+    func countOfFormalSet() -> Int {
+        switch self {
+        case .Deadlift:
+            return 1
+        case .Squat, .BenchPress:
+            return 3
+        default:
+            return 5
+        }
+    }
 }

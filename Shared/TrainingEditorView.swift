@@ -77,6 +77,27 @@ struct TrainingEditorView: View {
                                     }
                                     ToolbarItem(placement: .confirmationAction) {
                                         Button(NSLocalizedString("save", comment: "")) {
+                                            let template = Training.getStrategy()
+                                            var exerciseType2Record: [Int16: Record] = [:]
+                                            if let recordList = template.recordList {
+                                                recordList.forEach { r in
+                                                    exerciseType2Record[r.exerciseType] = r
+                                                }
+                                            }
+
+                                            var recordList: [Record] = []
+                                            exerciseTypeListPicked.forEach { et in
+                                                var maxWeight: Double = 20
+                                                if let r = exerciseType2Record[et.rawValue] {
+                                                    maxWeight = r.weight
+                                                }
+                                                let minWeight: Double = 20
+                                                let countOfWarmUP = et.countOfWarmUpSet()
+                                                let countOfFormal = et.countOfFormalSet()
+                                                var tmpRecordList: [Record] = []
+                                                // TODO
+                                            }
+
                                             withAnimation {
                                                 isCreating = false
                                             }

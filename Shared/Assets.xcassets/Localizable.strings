@@ -19,6 +19,8 @@
 // TrainingEditor
 "init_training" = "自动生成";
 "init_training_title" = "选择运动顺序";
+"title_weight_of_plate" = "杠铃片";
+"plate_unit" = "片";
 
 // RecordEditor
 "exercise_type" = "动作";
