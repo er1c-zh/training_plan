@@ -22,6 +22,7 @@
 		1AB7C8E72560647F823BB131 /* training.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CBE2E02E5A86473E531D /* training.xcdatamodeld */; };
 		1AB7C9832B01211DB2CC8B15 /* PlanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */; };
 		1AB7C9845A2CD2BD2B0BCF1A /* TrainingEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */; };
+		1AB7C98DA4FF3860DBCC2011 /* PlateCfg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C76AF4EA396F4C4F9294 /* PlateCfg.swift */; };
 		1AB7CA03F07DF851A18FC0BD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CC9C6354D472C4343FD2 /* Localizable.strings */; };
 		1AB7CAD47461CBFA787AEADE /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C0154EAF5FAFCA701A44 /* MainView.swift */; };
 		1AB7CADDE878A01DAE143B55 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C9379D570EB59D1E4168 /* Record.swift */; };
@@ -66,6 +67,7 @@
 		1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingEditorView.swift; sourceTree = "<group>"; };
 		1AB7C67EE1CB620D77695EFA /* Tests_iOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOSLaunchTests.swift; sourceTree = "<group>"; };
 		1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanListView.swift; sourceTree = "<group>"; };
+		1AB7C76AF4EA396F4C4F9294 /* PlateCfg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlateCfg.swift; sourceTree = "<group>"; };
 		1AB7C76F31496C40825AA7AF /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7C7D18C0C602A6D2458D0 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				1AB7CC20AFD79C5AFA89B64C /* public.swift */,
 				87E8A7A328B93AE50058DB67 /* Exercise.swift */,
 				1AB7C9379D570EB59D1E4168 /* Record.swift */,
+				1AB7C76AF4EA396F4C4F9294 /* PlateCfg.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -375,6 +378,7 @@
 				1AB7C7AE45FF2925C0A7A37F /* Record.swift in Sources */,
 				1AB7CFCDB10ADB592DF31E55 /* DebugView.swift in Sources */,
 				1AB7C33D201411CAE48B07F4 /* StrategyView.swift in Sources */,
+				1AB7C98DA4FF3860DBCC2011 /* PlateCfg.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

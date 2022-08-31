@@ -6,58 +6,15 @@ import Foundation
 import SwiftUI
 import Combine
 
-struct PlateCfg: Identifiable {
-    var id: Double {
-        weight
-    }
-    var weight: Double
-    var count: Int
-}
-
 struct StrategyView: View {
     @State private var strategy: Training = Training.getStrategy()
     @State private var data: Training.Data = Training.getStrategy().data
     @State private var isEditing: Bool = false
     @State private var refreshSwitch: Bool = false
 
-    @State private var listWeightOfPlate: [PlateCfg] = getListWeightOfPlate()
+    @State private var plateList: [PlateCfg] = PlateCfg.getList()
     @State private var isCreatingNewPlate: Bool = false
     @State private var plateCfgCreatingWeight: Double = 0
-
-    private func saveListWeightOfPlate() {
-        var l: [String] = []
-        for item in listWeightOfPlate {
-            l.append(String(format: "%.2f,%d", item.weight, item.count))
-        }
-        GlobalInst.logger.info("getListWeightOfPlate: \(l)")
-        UserDefaults.standard.set(l, forKey: "weight_of_plate")
-    }
-
-    static private func getListWeightOfPlate() -> [PlateCfg] {
-        let untyped = UserDefaults.standard.stringArray(forKey: "weight_of_plate")
-        if untyped == nil {
-            return []
-        }
-        GlobalInst.logger.info("getListWeightOfPlate: \(untyped!)")
-        var l: [PlateCfg] = []
-        for item in untyped! {
-            let tmp = item.split(separator: ",")
-            if tmp.count != 2 {
-                continue
-            }
-            let weight = Double(tmp[0])
-            let count = Int(tmp[1])
-            if weight == nil || count == nil {
-                GlobalInst.logger.info("getListWeightOfPlate \(tmp[0]) \(tmp[1])")
-                continue
-            }
-            GlobalInst.logger.info("==getListWeightOfPlate \(tmp[0]) \(tmp[1])")
-            l.append(PlateCfg(weight: weight!, count: count!))
-        }
-        GlobalInst.logger.info("getListWeightOfPlate: \(l)")
-        return l
-    }
-
 
     var body: some View {
         List {
@@ -83,7 +40,7 @@ struct StrategyView: View {
                 }
             })
             Section(header: Text(NSLocalizedString("title_weight_of_plate", comment: "")), content: {
-                ForEach($listWeightOfPlate) { $t in
+                ForEach($plateList) { $t in
                     HStack {
                         Text(String(format: "%.2f", t.weight))
                         Text(NSLocalizedString("weight_kg", comment: ""))
@@ -105,7 +62,7 @@ struct StrategyView: View {
                 }
                         .onDelete { indies in
                             withAnimation {
-                                listWeightOfPlate.remove(atOffsets: indies)
+                                plateList.remove(atOffsets: indies)
                             }
                         }
                 if isEditing {
@@ -143,8 +100,8 @@ struct StrategyView: View {
                                          }
                                          ToolbarItem(placement: .confirmationAction) {
                                              Button("Done") {
-                                                 listWeightOfPlate.append(PlateCfg(weight: plateCfgCreatingWeight, count: 0))
-                                                 listWeightOfPlate.sort(by: { $0.weight < $1.weight })
+                                                 plateList.append(PlateCfg(weight: plateCfgCreatingWeight, count: 0))
+                                                 plateList.sort(by: { $0.weight < $1.weight })
                                                  withAnimation {
                                                      isCreatingNewPlate = false
                                                  }
@@ -174,7 +131,7 @@ struct StrategyView: View {
                         Button(NSLocalizedString("save", comment: "")) {
                             strategy.update(from: data)
                             GlobalInst.SaveContext()
-                            saveListWeightOfPlate()
+                            PlateCfg.saveList(list: plateList)
                             withAnimation {
                                 isEditing = false
                             }
