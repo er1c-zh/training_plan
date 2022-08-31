@@ -112,6 +112,26 @@ struct StrategyView: View {
                             })
                 }
             })
+            Section(header: Text(NSLocalizedString("title_interval", comment: "")), content: {
+                HStack {
+                    Text(NSLocalizedString("set_warmup", comment: ""))
+                    Spacer()
+                    Text("45")
+                    Text(NSLocalizedString("rest_between_sets_unit", comment: ""))
+                }
+                HStack {
+                    Text(NSLocalizedString("set_formal", comment: ""))
+                    Spacer()
+                    Text("120")
+                    Text(NSLocalizedString("rest_between_sets_unit", comment: ""))
+                }
+                HStack {
+                    Text(NSLocalizedString("stretch", comment: ""))
+                    Spacer()
+                    Text("60")
+                    Text(NSLocalizedString("rest_between_sets_unit", comment: ""))
+                }
+            })
         }
                 .font(GlobalInst.GetFont())
                 .listStyle(.insetGrouped)

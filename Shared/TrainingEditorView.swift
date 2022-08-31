@@ -222,10 +222,10 @@ struct RecordEditorView: View {
                                 .buttonStyle(BorderlessButtonStyle())
                     }
                     HStack {
-                        Text(NSLocalizedString("rest_between_intervals", comment: ""))
+                        Text(NSLocalizedString("rest_between_sets", comment: ""))
                         Spacer()
                         Text(String(format: "%d", r.restInSec))
-                        Text(NSLocalizedString("rest_between_intervals_unit", comment: ""))
+                        Text(NSLocalizedString("rest_between_sets_unit", comment: ""))
                                 .frame(width: unitWidth())
                         Button(action: {
                             r.restInSec -= 30

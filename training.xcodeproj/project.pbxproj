@@ -15,6 +15,7 @@
 		1AB7C18372FDCB244AFE1D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AB7CA6877CDE8F1B0AAA165 /* Assets.xcassets */; };
 		1AB7C21AB6CF3B858C2419F5 /* PlanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C6B3D3570D896160B8A3 /* PlanListView.swift */; };
 		1AB7C33D201411CAE48B07F4 /* StrategyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C92B4C31A7E037BD7E58 /* StrategyView.swift */; };
+		1AB7C53D778F11672F1DBBDA /* RestBetweenSets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C128027F4A9871259203 /* RestBetweenSets.swift */; };
 		1AB7C56793E9F0ECDAFC5492 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C88A4C81E39FE0C8394A /* Tests_macOSLaunchTests.swift */; };
 		1AB7C62892CD1FBC5B64A422 /* Training.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CB68127FF03AF440FB1A /* Training.swift */; };
 		1AB7C7AE45FF2925C0A7A37F /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C9379D570EB59D1E4168 /* Record.swift */; };
@@ -36,6 +37,7 @@
 		1AB7CE5EE26619A4DF393A73 /* training.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7CBE2E02E5A86473E531D /* training.xcdatamodeld */; };
 		1AB7CF59CE34060FFD413291 /* trainingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C1CA71DA86439AC75A97 /* trainingApp.swift */; };
 		1AB7CFCDB10ADB592DF31E55 /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C5A1C6158B55DB4B7EE6 /* DebugView.swift */; };
+		1AB7CFF0BB42B2C9933B9D4B /* SetTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7C2AB246884DD59008E8D /* SetTag.swift */; };
 		87E8A7A428B93AE50058DB67 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E8A7A328B93AE50058DB67 /* Exercise.swift */; };
 		87E8A7A528B93AE50058DB67 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E8A7A328B93AE50058DB67 /* Exercise.swift */; };
 /* End PBXBuildFile section */
@@ -59,9 +61,11 @@
 
 /* Begin PBXFileReference section */
 		1AB7C0154EAF5FAFCA701A44 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		1AB7C128027F4A9871259203 /* RestBetweenSets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestBetweenSets.swift; sourceTree = "<group>"; };
 		1AB7C153C05A27F3F91EF691 /* training.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = training.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7C1CA71DA86439AC75A97 /* trainingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = trainingApp.swift; sourceTree = "<group>"; };
 		1AB7C1E2E644E5041C2CF16F /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AB7C2AB246884DD59008E8D /* SetTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetTag.swift; sourceTree = "<group>"; };
 		1AB7C59D4F85E9ACAD90A4C0 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		1AB7C5A1C6158B55DB4B7EE6 /* DebugView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		1AB7C6619435C2218AC4642A /* TrainingEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingEditorView.swift; sourceTree = "<group>"; };
@@ -135,6 +139,8 @@
 				87E8A7A328B93AE50058DB67 /* Exercise.swift */,
 				1AB7C9379D570EB59D1E4168 /* Record.swift */,
 				1AB7C76AF4EA396F4C4F9294 /* PlateCfg.swift */,
+				1AB7C128027F4A9871259203 /* RestBetweenSets.swift */,
+				1AB7C2AB246884DD59008E8D /* SetTag.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -379,6 +385,8 @@
 				1AB7CFCDB10ADB592DF31E55 /* DebugView.swift in Sources */,
 				1AB7C33D201411CAE48B07F4 /* StrategyView.swift in Sources */,
 				1AB7C98DA4FF3860DBCC2011 /* PlateCfg.swift in Sources */,
+				1AB7C53D778F11672F1DBBDA /* RestBetweenSets.swift in Sources */,
+				1AB7CFF0BB42B2C9933B9D4B /* SetTag.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
