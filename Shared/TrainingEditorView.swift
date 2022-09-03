@@ -61,7 +61,7 @@ struct TrainingEditorView: View {
                 .navigationBarItems(trailing: Button(NSLocalizedString("save", comment: "")) {
                     let training = Training(context: GlobalInst.GetContext())
                     training.trainingID = Int64(NSDate().timeIntervalSince1970)
-                    training.status = Training.Status.statusDoing.rawValue
+                    training.status = Int16(RecordStatus.statusDoing.rawValue)
                     training.update(from: data)
                     GlobalInst.SaveContext()
                 })
@@ -77,27 +77,7 @@ struct TrainingEditorView: View {
                                     }
                                     ToolbarItem(placement: .confirmationAction) {
                                         Button(NSLocalizedString("save", comment: "")) {
-                                            let template = Training.getStrategy()
-                                            var exerciseType2Record: [Int16: Record] = [:]
-                                            if let recordList = template.recordList {
-                                                recordList.forEach { r in
-                                                    exerciseType2Record[r.exerciseType] = r
-                                                }
-                                            }
-
-                                            var recordList: [Record] = []
-                                            exerciseTypeListPicked.forEach { et in
-                                                var maxWeight: Double = 20
-                                                if let r = exerciseType2Record[et.rawValue] {
-                                                    maxWeight = r.weight
-                                                }
-                                                let minWeight: Double = 20
-                                                let countOfWarmUP = et.countOfWarmUpSet()
-                                                let countOfFormal = et.countOfFormalSet()
-                                                var tmpRecordList: [Record] = []
-                                                // TODO
-                                            }
-
+                                            data.recordList = Generator.gen(etList: exerciseTypeListPicked)
                                             withAnimation {
                                                 isCreating = false
                                             }
@@ -150,7 +130,6 @@ struct RecordRowView: View {
 
     private func format() -> String {
         let tmp = ExerciseType.descByVal(val: r.exerciseType)
-        GlobalInst.logger.info("RecordRowView format \(tmp)")
         return String(format: "%@ %.1fkg * %d", tmp, r.weight, r.rep)
     }
 

@@ -56,7 +56,7 @@ public final class recordListTransformer : ValueTransformer {
                 for idStr in idList {
                     let id: Int64? = Int64(idStr)
                     if (id != nil) {
-                        let record = Record.getRecordListByRecordID(recordID: id!)
+                        let record = Record.getRecordByRecordID(recordID: id!)
                         if record != nil {
                             recordList.append(record!)
                         }
@@ -77,6 +77,18 @@ extension NSValueTransformerName {
     static let recordListTransformer = NSValueTransformerName(rawValue: "recordListTransformer")
 }
 
+enum RecordType: Int {
+    case typeFormal = 1;
+    case typeWarmup = 2;
+}
+
+enum RecordStatus: Int {
+    case statusInit = 0;
+    case statusDoing = 1;
+    case statusDone = 2;
+    case statusCanceled = 3;
+    case statusTemplate = 4;
+}
 
 extension Training {
 
@@ -127,19 +139,11 @@ extension Training {
         recordList = tmpList
     }
 
-    enum Status: Int16 {
-        case statusInit = 0;
-        case statusDoing = 1;
-        case statusDone = 2;
-        case statusCanceled = 3;
-        case statusTemplate = 4;
-    }
-
     static func getDoingTraining() -> Training? {
         let fr = NSFetchRequest<Training>()
         fr.entity = Training.entity()
         fr.fetchLimit = 1
-        fr.predicate = NSPredicate(format: "status == %d", Int(Training.Status.statusDoing.rawValue))
+        fr.predicate = NSPredicate(format: "status == %d", RecordStatus.statusDoing.rawValue)
         fr.sortDescriptors = [
             NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
         ]
@@ -211,7 +215,7 @@ extension Training {
         let fr = NSFetchRequest<Training>()
         fr.entity = Training.entity()
         fr.fetchLimit = 1
-        fr.predicate = NSPredicate(format: "status == %d", Int(Training.Status.statusTemplate.rawValue))
+        fr.predicate = NSPredicate(format: "status == %d", Int(RecordStatus.statusTemplate.rawValue))
         fr.sortDescriptors = [
             NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
         ]
@@ -223,7 +227,7 @@ extension Training {
             } else {
                 strategyTraining = Training.init(context: GlobalInst.GetContext())
                 strategyTraining.trainingID = -1 /* TODO fix this */
-                strategyTraining.status = Training.Status.statusTemplate.rawValue
+                strategyTraining.status = Int16(RecordStatus.statusTemplate.rawValue)
                 GlobalInst.SaveContext()
             }
         } catch {

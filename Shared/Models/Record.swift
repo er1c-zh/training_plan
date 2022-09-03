@@ -6,7 +6,14 @@ import Foundation
 import CoreData
 
 extension Record {
-    struct Data : Identifiable {
+    enum Status: Int16 {
+        case initing = 0
+        case doing = 1
+        case done = 2
+        case deleted = 3
+    }
+
+    struct Data: Identifiable {
         var id: Int64 = GlobalInst.GetMillisecondTimestamp()
         var exerciseType: Int16 = ExerciseType.Unknown.rawValue
         var rep: Int64 = 0
@@ -35,14 +42,14 @@ extension Record {
         GlobalInst.logger.info("Record.update after (\(self.recordID)) (\(self)) , data \(data.id)")
     }
 
-    static func getRecordListByRecordID(recordID: Int64) -> Record? {
+    static func getRecordByRecordID(recordID: Int64) -> Record? {
         GlobalInst.logger.info("getRecordListByRecordID start")
         let fr = NSFetchRequest<Record>()
         fr.entity = Record.entity()
         fr.predicate = NSPredicate(format: "recordID == %ld", recordID)
         fr.sortDescriptors = [
-             NSSortDescriptor(keyPath: \Record.startTimestamp, ascending: true),
-             NSSortDescriptor(keyPath: \Record.order, ascending: true)
+            NSSortDescriptor(keyPath: \Record.startTimestamp, ascending: true),
+            NSSortDescriptor(keyPath: \Record.order, ascending: true)
         ]
         do {
             let context = PersistenceController.shared.container.viewContext
@@ -70,6 +77,25 @@ extension Record {
         } catch {
             GlobalInst.logger.error("getRecordListByRecordID fail")
             return []
+        }
+    }
+
+    static func getLastDoneFormalRecordByExerciseType(et: ExerciseType) -> Record? {
+        let fr = NSFetchRequest<Record>()
+        fr.entity = Record.entity()
+        fr.predicate = NSPredicate(format: "exerciseType == %d AND type == %d AND status == %d",
+                et.rawValue, RecordType.typeFormal.rawValue, RecordStatus.statusDone.rawValue)
+        fr.fetchLimit = 1
+        fr.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Record.recordID, ascending: false),
+        ]
+        do {
+            let context = PersistenceController.shared.container.viewContext
+            let result = try context.fetch(fr)
+            return result.first
+        } catch {
+            GlobalInst.logger.error("getLastDoneFormalRecordByExerciseType fail")
+            return nil
         }
     }
 }
