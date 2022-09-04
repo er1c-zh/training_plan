@@ -31,7 +31,7 @@ struct Generator {
             // TODO 三组热身 三组正式组 改为配置
             var cntWarmUp: Int = 0
             var curWeight: Double = min
-            while cntWarmUp < 3 || curWeight + 20 < max {
+            while cntWarmUp < et.countOfWarmUpSet() || curWeight + 20 < max {
                 var tmp: Record.Data = Record.Data()
                 tmp.id = GlobalInst.GetMillisecondTimestamp()
                 tmp.exerciseType = et.rawValue
@@ -46,7 +46,7 @@ struct Generator {
                 }
             }
             var cntFormal: Int = 0
-            while cntFormal < 3 {
+            while cntFormal < et.countOfFormalSet() {
                 var tmp: Record.Data = Record.Data()
                 tmp.id = GlobalInst.GetMillisecondTimestamp()
                 tmp.exerciseType = et.rawValue
