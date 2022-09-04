@@ -12,6 +12,7 @@
 
 // UI
 "start_training" = "开始";
+"del_training" = "删除";
 "create_training" = "创建";
 "title_strategy" = "策略";
 "max_weight" = "正式组重量";

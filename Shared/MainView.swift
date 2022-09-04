@@ -35,37 +35,52 @@ struct MainView: View {
             // Today
 
             NavigationView {
-                HStack {
-                    Spacer().frame(width: GlobalInst.config.Padding)
-                    VStack {
-                        HStack {
-                            Text("Today").font(Font.system(.title))
-                            Spacer()
-                        }
-                        Spacer().frame(height: GlobalInst.config.Padding)
+                VStack {
+                    Spacer()
+                    if training != nil {
+                        // TODO use workout view
+                        TrainingPreviewView(data: training!.data)
+                                .padding(32)
+                    }
+
+                    Spacer()
+
+                    HStack {
                         if training != nil {
-                            // TODO use workout view
+                            Spacer()
+                            Button(action: {
+                                if let training = training {
+                                    withAnimation {
+                                        GlobalInst.GetContext().delete(training)
+                                        GlobalInst.SaveContext()
+                                    }
+                                }
+                            }) {
+                                Text(NSLocalizedString("del_training", comment: ""))
+                                        .frame(width: 72, height: 72)
+                                        .foregroundColor(Color.white)
+                                        .background(Color.red)
+                                        .clipShape(Circle())
+                            }
+                            Spacer()
                             NavigationLink(destination: TrainingEditorView()) {
                                 Text(NSLocalizedString("start_training", comment: ""))
+                                        .frame(width: 72, height: 72)
+                                        .foregroundColor(Color.white)
+                                        .background(Color.green)
+                                        .clipShape(Circle())
                             }
+                            Spacer()
                         } else {
                             NavigationLink(destination: TrainingEditorView()) {
                                 Text(NSLocalizedString("create_training", comment: ""))
                             }
                         }
-                        Spacer()
-
-                        Button("del") {
-                            if let training = training {
-                                GlobalInst.GetContext().delete(training)
-                                GlobalInst.SaveContext()
-                            }
-                        }
-                        Spacer().frame(height: GlobalInst.config.Padding)
                     }
-                            .navigationBarTitleDisplayMode(.inline)
-                    Spacer().frame(width: GlobalInst.config.Padding)
+                            .background(Color.clear.opacity(1))
+                    Spacer()
                 }
+                        .navigationBarTitle("Today")
             }
                     .tabItem {
                         Label("Today", systemImage: "play")

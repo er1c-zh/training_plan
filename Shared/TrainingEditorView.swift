@@ -59,10 +59,11 @@ struct TrainingEditorView: View {
                                     data.format()
                                 }
                             }
-                    }
                 }
+            }
         }
                 .navigationBarTitle(LocalizedStringKey("create_training"))
+                .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(NSLocalizedString("save", comment: "")) {
                     let training = Training(context: GlobalInst.GetContext())
                     training.trainingID = Int64(NSDate().timeIntervalSince1970)
@@ -128,9 +129,9 @@ struct RecordRowView: View {
         VStack {
             HStack {
                 // TODO 计算每一项最长的，填充到等宽
-                Text(format()).font(getFont())
+                Text(format()).font(GlobalInst.GetFont())
                 Spacer()
-                Text(String(format: "%ds", r.restInSec)).font(getFont())
+                Text(String(format: "%ds", r.restInSec)).font(GlobalInst.GetFont())
             }
         }
     }
@@ -138,10 +139,6 @@ struct RecordRowView: View {
     private func format() -> String {
         let tmp = ExerciseType.descByVal(val: r.exerciseType)
         return String(format: "%@ %.1fkg * %d", tmp, r.weight, r.rep)
-    }
-
-    private func getFont() -> Font {
-        Font.system(size: 16).monospaced()
     }
 }
 
