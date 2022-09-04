@@ -59,16 +59,46 @@ struct TrainingPreviewRowView: View {
 }
 
 struct TrainingView: View {
+    private var didChange = NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)  //the publisher
     @ObservedObject var training: Training
-    @State private var refresh: Bool = false
+    @State var order: Int
+    @State var status: Int
+    @State var record: Record
 
-    private func getCurRecordIdx() -> Int {
+    init(training: Training) {
+        self.training = training
+        var o: Int = -1
         if let l = training.recordList {
             var i = 0
-            GlobalInst.logger.info("recordList.len \(l.count)")
             while i < l.count {
-                GlobalInst.logger.info("recordList[\(i)] = \(l[i].status)")
-                if l[i].status <= RecordStatus.statusDoing.rawValue {
+                if l[i].status == RecordStatus.statusInit.rawValue ||
+                           l[i].status == RecordStatus.statusDoing.rawValue {
+                    o = i
+                    break
+                }
+                i += 1
+            }
+
+        }
+        _order = State<Int>.init(initialValue: o)
+        if o > -1 {
+            _status = State<Int>.init(initialValue: Int(training.recordList![o].status))
+        } else {
+            _status = State<Int>.init(initialValue: Int(RecordStatus.statusInit.rawValue))
+        }
+        if o > -1 {
+            _record = State<Record>.init(initialValue: training.recordList![o])
+        } else {
+            _record = State<Record>.init(initialValue: Record())
+        }
+    }
+
+    func refreshCurRecordIdx() -> Int {
+        if let l = training.recordList {
+            var i = 0
+            while i < l.count {
+                if l[i].status == RecordStatus.statusInit.rawValue ||
+                           l[i].status == RecordStatus.statusDoing.rawValue {
                     return i
                 }
                 i += 1
@@ -79,21 +109,20 @@ struct TrainingView: View {
 
     var body: some View {
         VStack {
-            if getCurRecordIdx() == -1 {
+            if order == -1 {
                 Text("done")
             } else {
                 Spacer()
-                TrainingCardView(record: training.recordList![getCurRecordIdx()])
+                TrainingCardView(idx: $order, record: $record)
                 Spacer()
                 HStack {
-                    if training.recordList![getCurRecordIdx()].status == RecordStatus.statusInit.rawValue {
+                    if status == RecordStatus.statusInit.rawValue {
                         Button(action: {
-                            let i = getCurRecordIdx()
-                            training.recordList![i].status = Int16(RecordStatus.statusDoing.rawValue)
-                            training.recordList![i].startTimestamp = Int64(Date().timeIntervalSince1970)
-                            GlobalInst.SaveContext()
                             withAnimation {
-                                refresh.toggle()
+                                training.recordList![order].status = Int16(RecordStatus.statusDoing.rawValue)
+                                training.recordList![order].startTimestamp = Int64(Date().timeIntervalSince1970)
+                                training.versionID += 1
+                                GlobalInst.SaveContext()
                             }
                         }) {
                             Text(NSLocalizedString("start_training", comment: ""))
@@ -104,19 +133,18 @@ struct TrainingView: View {
                         }
                     } else {
                         Button(action: {
-                            let i = getCurRecordIdx()
-                            training.recordList![i].status = Int16(RecordStatus.statusDone.rawValue)
-                            training.recordList![i].finishTimestamp = Int64(Date().timeIntervalSince1970)
-                            GlobalInst.SaveContext()
                             withAnimation {
-                                refresh.toggle()
+                                training.recordList![order].status = Int16(RecordStatus.statusDone.rawValue)
+                                training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
+                                training.versionID += 1
+                                GlobalInst.SaveContext()
                             }
                         }) {
                             Text(NSLocalizedString("finish_record", comment: ""))
                                     .frame(width: 72, height: 72)
-                                    .foregroundColor(Color.white)
-                                    .background(Color.green)
-                                    .clipShape(Circle())
+                                    .foregroundColor(Color.green)
+                                    .font(.system(.body).bold())
+                                    .overlay(Circle().stroke(Color.green))
                         }
                     }
                 }
@@ -124,13 +152,30 @@ struct TrainingView: View {
             }
         }
                 .padding(32)
+                .onReceive(didChange) { output in
+                    withAnimation {
+                        order = refreshCurRecordIdx()
+                        if order > -1 {
+                            status = Int(training.recordList![order].status)
+                            record = training.recordList![order]
+                        } else {
+                            status = RecordStatus.statusInit.rawValue
+                        }
+                    }
+                }
     }
 }
 
 struct TrainingCardView: View {
-    @State var record: Record
+    @Binding var idx: Int
+    @Binding var record: Record
     var body: some View {
         VStack {
+            HStack {
+                Text("No. \(idx + 1)")
+                        .font(.title)
+                Spacer()
+            }
             HStack{
                 Text(ExerciseType.descByVal(val: record.exerciseType))
                         .font(.title)
@@ -140,11 +185,16 @@ struct TrainingCardView: View {
             HStack {
                 Text(formatDetail()).font(GlobalInst.GetFont())
                 Spacer()
+                Text(formatDetailSuffix()).font(GlobalInst.GetFont())
             }
         }
     }
 
     private func formatDetail() -> String {
         String(format: "%.1f%@ * %d", record.weight, NSLocalizedString("weight_kg", comment: ""), record.rep)
+    }
+
+    private func formatDetailSuffix() -> String {
+        String(format: "rest: %d%@", record.restInSec, NSLocalizedString("rest_between_sets_unit", comment: ""))
     }
 }

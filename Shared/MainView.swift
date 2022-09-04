@@ -10,9 +10,6 @@ import SwiftUI
 import CoreData
 
 struct MainView: View {
-    private var didChange = NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)  //the publisher
-    @State private var refreshing = false
-
     @State private var selection = 1
     @ObservedObject private var training: Training = Training.getDoingTraining()
 
@@ -90,10 +87,6 @@ struct MainView: View {
                         Label("Today", systemImage: "play")
                     }
                     .tag(1)
-                    .onReceive(didChange) { _ in
-//                        loadTraining()
-//                        refreshing.toggle()
-                    }
 
 
             // 计划
