@@ -14,12 +14,7 @@ struct MainView: View {
     @State private var refreshing = false
 
     @State private var selection = 1
-    @State private var training: Training? = Training.getDoingTraining()
-
-    func loadTraining() {
-        training = Training.getDoingTraining()
-        GlobalInst.logger.info("loadTraining: \(training == nil)")
-    }
+    @ObservedObject private var training: Training = Training.getDoingTraining()
 
     var body: some View {
         TabView(selection: $selection) {
@@ -37,23 +32,26 @@ struct MainView: View {
             NavigationView {
                 VStack {
                     Spacer()
-                    if training != nil {
-                        // TODO use workout view
-                        TrainingPreviewView(data: training!.data)
+                    if training.status != RecordStatus.statusInit.rawValue {
+                        TrainingPreviewView(data: training.data)
                                 .padding(32)
                     }
 
                     Spacer()
 
                     HStack {
-                        if training != nil {
+                        if training.status != RecordStatus.statusInit.rawValue {
                             Spacer()
                             Button(action: {
-                                if let training = training {
-                                    withAnimation {
-                                        GlobalInst.GetContext().delete(training)
-                                        GlobalInst.SaveContext()
+                                withAnimation {
+                                    training.status = Int16(RecordStatus.statusInit.rawValue)
+                                    if let l = training.recordList {
+                                        for r in l {
+                                            GlobalInst.GetContext().delete(r)
+                                        }
                                     }
+                                    training.recordList = nil
+                                    GlobalInst.SaveContext()
                                 }
                             }) {
                                 Text(NSLocalizedString("del_training", comment: ""))
@@ -63,7 +61,9 @@ struct MainView: View {
                                         .clipShape(Circle())
                             }
                             Spacer()
-                            NavigationLink(destination: TrainingEditorView()) {
+
+                            Spacer()
+                            NavigationLink(destination: TrainingView(training: training)) {
                                 Text(NSLocalizedString("start_training", comment: ""))
                                         .frame(width: 72, height: 72)
                                         .foregroundColor(Color.white)
@@ -72,8 +72,12 @@ struct MainView: View {
                             }
                             Spacer()
                         } else {
-                            NavigationLink(destination: TrainingEditorView()) {
+                            NavigationLink(destination: TrainingEditorView(training: training)) {
                                 Text(NSLocalizedString("create_training", comment: ""))
+                                        .frame(width: 72, height: 72)
+                                        .foregroundColor(Color.white)
+                                        .background(Color.green)
+                                        .clipShape(Circle())
                             }
                         }
                     }
@@ -87,16 +91,8 @@ struct MainView: View {
                     }
                     .tag(1)
                     .onReceive(didChange) { _ in
-                        GlobalInst.logger.info("refresh start, training: \(training == nil)")
-                        if training != nil {
-                            GlobalInst.logger.info("refresh start, training: \(training!.trainingID)")
-                        }
-                        loadTraining()
-                        refreshing.toggle()
-                        GlobalInst.logger.info("refresh done, training: \(training == nil)")
-                        if training != nil {
-                            GlobalInst.logger.info("refresh done, training: \(training!.trainingID)")
-                        }
+//                        loadTraining()
+//                        refreshing.toggle()
                     }
 
 

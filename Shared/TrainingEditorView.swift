@@ -15,6 +15,7 @@ enum TrainingEditorViewSheetID: Identifiable {
 }
 
 struct TrainingEditorView: View {
+    @ObservedObject var training: Training
     @State private var data: Training.Data = Training.Data(recordList: [], recordListGroupByExerciseType: [])
     @State private var recordData: Record.Data = Record.Data()
     @State private var isCreating: Bool = false
@@ -65,8 +66,6 @@ struct TrainingEditorView: View {
                 .navigationBarTitle(LocalizedStringKey("create_training"))
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(NSLocalizedString("save", comment: "")) {
-                    let training = Training(context: GlobalInst.GetContext())
-                    training.trainingID = Int64(NSDate().timeIntervalSince1970)
                     training.status = Int16(RecordStatus.statusDoing.rawValue)
                     training.update(from: data)
                     GlobalInst.SaveContext()

@@ -20,10 +20,11 @@
         <attribute name="recordList" optional="YES" attributeType="Transformable" valueTransformerName="recordListTransformer" customClassName="[Record]"/>
         <attribute name="status" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="trainingID" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="versionID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <elements>
         <element name="Record" positionX="-63" positionY="-18" width="128" height="224"/>
-        <element name="Training" positionX="-54" positionY="63" width="128" height="74"/>
         <element name="Strategy" positionX="-54" positionY="81" width="128" height="29"/>
+        <element name="Training" positionX="-54" positionY="63" width="128" height="89"/>
     </elements>
 </model>

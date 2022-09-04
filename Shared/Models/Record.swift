@@ -30,7 +30,6 @@ extension Record {
     }
 
     func update(from data: Data) {
-        GlobalInst.logger.info("Record.update before (\(self.recordID)) (\(self)) , data \(data.id)")
         exerciseType = data.exerciseType
         rep = data.rep
         tag = data.tag
@@ -39,7 +38,6 @@ extension Record {
         weightUnit = data.weightUnit
         recordID = data.id
         restInSec = data.restInSec
-        GlobalInst.logger.info("Record.update after (\(self.recordID)) (\(self)) , data \(data.id)")
     }
 
     static func getRecordByRecordID(recordID: Int64) -> Record? {
@@ -61,6 +59,23 @@ extension Record {
             }
             GlobalInst.logger.error("getRecordListByRecordID fail")
             return nil
+        }
+    }
+
+    static func getRecordListExceptTemplate() -> [Record] {
+        let fr = NSFetchRequest<Record>()
+        fr.entity = Record.entity()
+        fr.predicate = NSPredicate(format: "status == %d", RecordStatus.statusTemplate.rawValue)
+        fr.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Record.recordID, ascending: true),
+        ]
+        do {
+            let context = PersistenceController.shared.container.viewContext
+            let result = try context.fetch(fr)
+            return result
+        } catch {
+            GlobalInst.logger.error("getRecordListByRecordID fail")
+            return []
         }
     }
 

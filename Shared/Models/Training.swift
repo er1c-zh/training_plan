@@ -165,13 +165,14 @@ extension Training {
         }
 
         recordList = tmpList
+        versionID = GlobalInst.GetMillisecondTimestamp()
     }
 
-    static func getDoingTraining() -> Training? {
+    static func getDoingTraining() -> Training {
         let fr = NSFetchRequest<Training>()
         fr.entity = Training.entity()
         fr.fetchLimit = 1
-        fr.predicate = NSPredicate(format: "status == %d", RecordStatus.statusDoing.rawValue)
+        fr.predicate = NSPredicate(format: "status == %d || status == %d", RecordStatus.statusDoing.rawValue, RecordStatus.statusInit.rawValue)
         fr.sortDescriptors = [
             NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
         ]
@@ -179,13 +180,14 @@ extension Training {
             let result = try GlobalInst.GetContext().fetch(fr)
             if result.count > 0 {
                 return result[0]
-            } else  {
-                return nil
             }
         } catch {
             GlobalInst.logger.error("getDoingTraining fail")
-            return nil
         }
+        let new = Training.init(context: GlobalInst.GetContext())
+        new.status = Int16(RecordStatus.statusInit.rawValue)
+        new.trainingID = GlobalInst.GetMillisecondTimestamp()
+        return new
     }
 
     static private var strategy: Training = loadStrategyTraining()
@@ -210,6 +212,7 @@ extension Training {
                 let tmp = Record.init(context: GlobalInst.GetContext())
                 tmp.recordID = GlobalInst.GetMillisecondTimestamp()
                 tmp.exerciseType = exerciseTypeList[i].rawValue
+                tmp.status = Int16(RecordStatus.statusTemplate.rawValue)
                 newRecordList.append(tmp)
                 i += 1
             } else {

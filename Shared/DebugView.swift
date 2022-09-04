@@ -5,10 +5,17 @@
 import SwiftUI
 
 struct DebugView : View {
+    @State private var trigger: Bool = false
     var body : some View {
         List {
             Section("record") {
-                ForEach(Record.getRecordList()) { r in
+                Button("clean", action: {
+                    for r in Record.getRecordListExceptTemplate() {
+                        GlobalInst.GetContext().delete(r)
+                    }
+                    GlobalInst.SaveContext()
+                })
+                ForEach(Record.getRecordListExceptTemplate()) { r in
                     Text(String(format: "%ld, %d", r.recordID, r.exerciseType))
                             .onTapGesture {
                                 GlobalInst.logger.info("\(r)")
@@ -17,7 +24,7 @@ struct DebugView : View {
             }
             Section("Training") {
                 ForEach(Training.getTrainingList()) { t in
-                    Text(String(format: "%d", t.trainingID))
+                    Text(String(format: "%ld-status: %d", t.trainingID, t.status))
                             .onTapGesture {
                                 GlobalInst.logger.info("\(t)")
                             }
