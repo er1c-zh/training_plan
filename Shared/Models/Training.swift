@@ -69,7 +69,7 @@ public final class recordListTransformer : ValueTransformer {
     }
 
     public override class func allowsReverseTransformation() -> Bool {
-        return true
+        true
     }
 }
 
@@ -94,15 +94,43 @@ extension Training {
 
     struct Data {
         var recordList: [Record.Data] = []
+
+        struct Group : Identifiable {
+            var id: Int
+            var Data: [Record.Data]
+        }
+
+        var recordListGroupByExerciseType: [Group]
+
+        public mutating func format() {
+            var i = 0
+            var idx = 0
+            recordListGroupByExerciseType = []
+            var l: [Record.Data] = []
+            while i < recordList.count {
+                if l.count != 0 && recordList[i].exerciseType != l.last!.exerciseType {
+                    recordListGroupByExerciseType.append(Group(id: idx, Data: l))
+                    idx += 1
+                    l = []
+                    continue
+                }
+                l.append(recordList[i])
+                i += 1
+            }
+            if l.count > 0 {
+                recordListGroupByExerciseType.append(Group(id: idx, Data: l))
+            }
+        }
     }
 
     var data: Data {
-        var d = Data(recordList: [])
+        var d = Data(recordList: [], recordListGroupByExerciseType: [])
         if let recordList = recordList {
             for r in recordList {
                 d.recordList.append(r.data)
             }
         }
+        d.format()
         return d
     }
 

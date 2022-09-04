@@ -15,7 +15,7 @@ enum TrainingEditorViewSheetID: Identifiable {
 }
 
 struct TrainingEditorView: View {
-    @State private var data: Training.Data = Training.Data(recordList: [])
+    @State private var data: Training.Data = Training.Data(recordList: [], recordListGroupByExerciseType: [])
     @State private var recordData: Record.Data = Record.Data()
     @State private var isCreating: Bool = false
     @State private var isEditing: Bool = false
@@ -23,39 +23,44 @@ struct TrainingEditorView: View {
 
     var body: some View {
         List {
-            ForEach($data.recordList) { $r in
-                RecordRowView(r: $r)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            recordData = r
-                            withAnimation {
-                                isEditing = true
-                            }
-                        }
-            }
-                    .onDelete { indexSet in
-                        withAnimation {
-                            data.recordList.remove(atOffsets: indexSet)
-                        }
-                    }
-            Button(NSLocalizedString("add", comment: "")) {
-                withAnimation {
-                    let tmp = Record.Data()
-                    recordData = tmp
+            Section {
+                Button(NSLocalizedString("add", comment: "")) {
                     withAnimation {
-                        data.recordList.append(tmp)
-                        isEditing = true
+                        let tmp = Record.Data()
+                        recordData = tmp
+                        withAnimation {
+                            data.recordList.append(tmp)
+                            isEditing = true
+                        }
+                    }
+                }
+                Button(NSLocalizedString("init_training", comment: "")) {
+                    exerciseTypeListPicked = []
+                    withAnimation {
+                        isCreating = true
                     }
                 }
             }
-            Button(NSLocalizedString("init_training", comment: "")) {
-                exerciseTypeListPicked = []
-                withAnimation {
-                    isCreating = true
+            ForEach($data.recordListGroupByExerciseType) { $rl in
+                Section {
+                    ForEach($rl.Data) { $r in
+                        RecordRowView(r: $r)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    recordData = r
+                                    withAnimation {
+                                        isEditing = true
+                                    }
+                                }
+                    }
+                            .onDelete { indexSet in
+                                withAnimation {
+                                    data.recordList.remove(atOffsets: indexSet)
+                                    data.format()
+                                }
+                            }
+                    }
                 }
-            }
-            EmptyView()
-
         }
                 .navigationBarTitle(LocalizedStringKey("create_training"))
                 .navigationBarItems(trailing: Button(NSLocalizedString("save", comment: "")) {
@@ -78,6 +83,7 @@ struct TrainingEditorView: View {
                                     ToolbarItem(placement: .confirmationAction) {
                                         Button(NSLocalizedString("save", comment: "")) {
                                             data.recordList = Generator.gen(etList: exerciseTypeListPicked)
+                                            data.format()
                                             withAnimation {
                                                 isCreating = false
                                             }
@@ -104,6 +110,7 @@ struct TrainingEditorView: View {
                                                         break
                                                     }
                                                 }
+                                                data.format()
                                                 isEditing = false
                                             }
                                         }

@@ -28,6 +28,13 @@ extension ExerciseType : Identifiable {
         .PowerClean: NSLocalizedString("power_clean", comment: "")
     ]
 
+    struct Config {
+        var ExerciseType: ExerciseType
+        var MinWeight: Double = 0
+        var CntOfWarmUp: Int = 0
+        var CntOfFormal: Int = 0
+    }
+
     static func getAllExerciseType() -> [ExerciseType] {
         [.BenchPress, .Squat, .Deadlift, .MilitaryPress, .BentOverRow, .PowerClean]
     }
