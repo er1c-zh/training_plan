@@ -61,7 +61,7 @@ struct MainView: View {
 
                             Spacer()
                             NavigationLink(destination: TrainingView(training: training)) {
-                                Text(NSLocalizedString("start_training", comment: ""))
+                                Text(getStartOrContinue())
                                         .frame(width: 72, height: 72)
                                         .foregroundColor(Color.white)
                                         .background(Color.green)
@@ -106,5 +106,15 @@ struct MainView: View {
                     }
                     .tag(3)
         }
+    }
+
+    private func getStartOrContinue() -> String {
+        var isStart = true
+        if training.recordList != nil &&
+                   training.recordList!.first != nil &&
+                   training.recordList!.first!.status != RecordStatus.statusInit.rawValue {
+            isStart = false
+        }
+        return isStart ? NSLocalizedString("start_training", comment: "") : NSLocalizedString("continue_training", comment: "")
     }
 }

@@ -61,9 +61,12 @@ struct TrainingPreviewRowView: View {
 struct TrainingView: View {
     private var didChange = NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)  //the publisher
     @ObservedObject var training: Training
-    @State var order: Int
-    @State var status: Int
-    @State var record: Record
+    @State private var order: Int
+    @State private var status: Int
+    @State private var record: Record
+    @State private var restSecondTotal: Int64 = 45
+    @State private var restSecondPast: Int64 = 15
+    @State private var restTicker: Timer?
 
     init(training: Training) {
         self.training = training
@@ -107,6 +110,14 @@ struct TrainingView: View {
         return -1
     }
 
+    func restString() -> String {
+        if restSecondPast >= restSecondTotal {
+            return NSLocalizedString("start_record", comment: "")
+        }
+        let s = restSecondTotal - restSecondPast
+        return String(format: "%ld′%02ld″", s / 60, s % 60)
+    }
+
     var body: some View {
         VStack {
             if order == -1 {
@@ -123,13 +134,25 @@ struct TrainingView: View {
                                 training.recordList![order].startTimestamp = Int64(Date().timeIntervalSince1970)
                                 training.versionID += 1
                                 GlobalInst.SaveContext()
+                                restTicker?.invalidate()
                             }
                         }) {
-                            Text(NSLocalizedString("start_training", comment: ""))
-                                    .frame(width: 72, height: 72)
-                                    .foregroundColor(Color.white)
-                                    .background(Color.green)
-                                    .clipShape(Circle())
+                            ZStack {
+                                Circle()
+                                        .fill(Color.green)
+                                        .frame(width: 96, height: 96)
+                                        .overlay(Text(restString())
+                                                .font(.system(.body).bold().monospaced())
+                                                .foregroundColor(Color.white))
+                                        .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondPast, clockwise: false).fill(Color.white))
+                                Circle()
+                                        .stroke(Color.green, lineWidth: 4)
+                                        .frame(width: 96, height: 96)
+                                        .overlay(Text(restString())
+                                                .font(.system(.body).bold().monospaced())
+                                                .foregroundColor(Color.green))
+                                        .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondTotal - restSecondPast, clockwise: true).fill(Color.white))
+                            }
                         }
                     } else {
                         Button(action: {
@@ -138,13 +161,25 @@ struct TrainingView: View {
                                 training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
                                 training.versionID += 1
                                 GlobalInst.SaveContext()
+                                // FIXME Refreshing rest second should wait didChange listener finished its work.
+                                restSecondTotal = record.restInSec
+                                restSecondPast = 0
+                                restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                                    withAnimation {
+                                        restSecondPast += 1
+                                        if restSecondPast >= restSecondTotal {
+                                            restTicker?.invalidate()
+                                        }
+                                    }
+                                })
                             }
                         }) {
-                            Text(NSLocalizedString("finish_record", comment: ""))
-                                    .frame(width: 72, height: 72)
-                                    .foregroundColor(Color.green)
-                                    .font(.system(.body).bold())
-                                    .overlay(Circle().stroke(Color.green))
+                            Circle()
+                                    .stroke(Color.green, lineWidth: 2) // FIXME mask导致相同粗细但是展示不同
+                                    .frame(width: 96, height: 96)
+                                    .overlay(Text(NSLocalizedString("finish_record", comment: ""))
+                                            .font(.system(.body).bold())
+                                            .foregroundColor(Color.green))
                         }
                     }
                 }
@@ -163,6 +198,37 @@ struct TrainingView: View {
                         }
                     }
                 }
+    }
+}
+
+struct TimerBtnMask: Shape {
+    let total: Int64
+    let cur: Int64
+    let clockwise: Bool
+
+    private var degreesPerSecond: Double {
+        360.0 / Double(total)
+    }
+
+    private var startAngle: Angle {
+        Angle(degrees: -90)
+    }
+    private var endAngle: Angle {
+        Angle(degrees: startAngle.degrees + degreesPerSecond * Double(cur) * (clockwise ? -1 : 1))
+    }
+
+    func path(in rect: CGRect) -> Path {
+        let diameter = min(rect.size.width, rect.size.height)
+        let radius = diameter / 2.0
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let start = CGPoint(x: rect.midX, y: 0)
+        GlobalInst.logger.info("path: \(cur) / \(total)")
+        return Path { path in
+            path.move(to: start)
+            path.addLine(to: center)
+            path.addArc(center: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: clockwise)
+            path.addLine(to: center)
+        }
     }
 }
 

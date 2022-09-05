@@ -12,6 +12,7 @@
 
 // UI
 "start_training" = "开始";
+"continue_training" = "继续";
 "del_training" = "删除";
 "create_training" = "创建";
 "title_strategy" = "策略";
