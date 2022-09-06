@@ -124,7 +124,7 @@ struct TrainingView: View {
                 Text("done")
             } else {
                 Spacer()
-                TrainingCardView(idx: $order, record: $record)
+                TrainingCardView(idx: $order, record: record)
                 Spacer()
                 HStack {
                     if status == RecordStatus.statusInit.rawValue {
@@ -155,39 +155,83 @@ struct TrainingView: View {
                             }
                         }
                     } else {
-                        Button(action: {
-                            withAnimation {
-                                let oldOrder = order
-                                training.recordList![order].status = Int16(RecordStatus.statusDone.rawValue)
-                                training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
-                                training.versionID += 1
-                                GlobalInst.SaveContext()
-                                // FIXME Refreshing rest second should wait didChange listener finished its work.
-                                Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false, block: { _ in
-                                    if oldOrder == order || order == -1 {
-                                        return
-                                    }
-                                    withAnimation {
-                                        restSecondTotal = record.restInSec
-                                        restSecondPast = 0
-                                        restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
-                                            withAnimation {
-                                                restSecondPast += 1
-                                                if restSecondPast >= restSecondTotal {
-                                                    restTicker?.invalidate()
-                                                }
+                        HStack {
+                            Spacer()
+                            VStack {
+                                Image(systemName:"chevron.up")
+                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                        .onTapGesture {
+                                            training.recordList![order].weight += 0.5
+                                            GlobalInst.SaveContext()
+                                        }
+                                Text(NSLocalizedString("weight", comment: ""))
+                                        .frame(height: TrainingView.btnSize / 4)
+                                Image(systemName:"chevron.down")
+                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                        .onTapGesture {
+                                            if training.recordList![order].weight > 0 {
+                                                training.recordList![order].weight -= 0.5
+                                                GlobalInst.SaveContext()
                                             }
-                                        })
-                                    }
-                                })
+                                        }
                             }
-                        }) {
-                            Circle()
-                                    .stroke(Color.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
-                                    .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
-                                    .overlay(Text(NSLocalizedString("finish_record", comment: ""))
-                                            .font(.system(.title2).bold())
-                                            .foregroundColor(Color.green))
+                                    .foregroundColor(.secondary)
+                            Spacer()
+                            Button(action: {
+                                withAnimation {
+                                    let oldOrder = order
+                                    training.recordList![order].status = Int16(RecordStatus.statusDone.rawValue)
+                                    training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
+                                    training.versionID += 1
+                                    GlobalInst.SaveContext()
+                                    // FIXME Refreshing rest second should wait didChange listener finished its work.
+                                    Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false, block: { _ in
+                                        if oldOrder == order || order == -1 {
+                                            return
+                                        }
+                                        withAnimation {
+                                            restSecondTotal = record.restInSec
+                                            restSecondPast = 0
+                                            restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                                                withAnimation {
+                                                    restSecondPast += 1
+                                                    if restSecondPast >= restSecondTotal {
+                                                        restTicker?.invalidate()
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            }) {
+                                Circle()
+                                        .stroke(Color.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
+                                        .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
+                                        .overlay(Text(NSLocalizedString("finish_record", comment: ""))
+                                                .font(.system(.title2).bold())
+                                                .foregroundColor(Color.green))
+                            }
+                            Spacer()
+                            VStack {
+                                Image(systemName:"chevron.up")
+                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                        .onTapGesture {
+                                            training.recordList![order].rep += 1
+                                            GlobalInst.SaveContext()
+                                        }
+                                Text(NSLocalizedString("rep", comment: ""))
+                                        .frame(height: TrainingView.btnSize / 4)
+                                Image(systemName:"chevron.down")
+                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                        .onTapGesture {
+                                            if training.recordList![order].rep > 0 {
+                                                training.recordList![order].rep -= 1
+                                                GlobalInst.SaveContext()
+                                            }
+                                        }
+                            }
+                                    .foregroundColor(.secondary)
+                            Spacer()
                         }
                     }
                 }
@@ -244,7 +288,7 @@ struct TimerBtnMask: Shape {
 
 struct TrainingCardView: View {
     @Binding var idx: Int
-    @Binding var record: Record
+    @ObservedObject var record: Record
     var body: some View {
         VStack {
             HStack {
