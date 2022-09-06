@@ -64,8 +64,8 @@ struct TrainingView: View {
     @State private var order: Int
     @State private var status: Int
     @State private var record: Record
-    @State private var restSecondTotal: Int64 = 45
-    @State private var restSecondPast: Int64 = 15
+    @State private var restSecondTotal: Int64 = 1
+    @State private var restSecondPast: Int64 = 1
     @State private var restTicker: Timer?
 
     init(training: Training) {
@@ -140,16 +140,16 @@ struct TrainingView: View {
                             ZStack {
                                 Circle()
                                         .fill(Color.green)
-                                        .frame(width: 96, height: 96)
+                                        .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                         .overlay(Text(restString())
-                                                .font(.system(.body).bold().monospaced())
+                                                .font(.system(.title2).bold().monospaced())
                                                 .foregroundColor(Color.white))
                                         .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondPast, clockwise: false).fill(Color.white))
                                 Circle()
-                                        .stroke(Color.green, lineWidth: 4)
-                                        .frame(width: 96, height: 96)
+                                        .stroke(Color.green, lineWidth: TrainingView.btnBorder)
+                                        .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                         .overlay(Text(restString())
-                                                .font(.system(.body).bold().monospaced())
+                                                .font(.system(.title2).bold().monospaced())
                                                 .foregroundColor(Color.green))
                                         .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondTotal - restSecondPast, clockwise: true).fill(Color.white))
                             }
@@ -157,28 +157,36 @@ struct TrainingView: View {
                     } else {
                         Button(action: {
                             withAnimation {
+                                let oldOrder = order
                                 training.recordList![order].status = Int16(RecordStatus.statusDone.rawValue)
                                 training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
                                 training.versionID += 1
                                 GlobalInst.SaveContext()
                                 // FIXME Refreshing rest second should wait didChange listener finished its work.
-                                restSecondTotal = record.restInSec
-                                restSecondPast = 0
-                                restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                                Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false, block: { _ in
+                                    if oldOrder == order || order == -1 {
+                                        return
+                                    }
                                     withAnimation {
-                                        restSecondPast += 1
-                                        if restSecondPast >= restSecondTotal {
-                                            restTicker?.invalidate()
-                                        }
+                                        restSecondTotal = record.restInSec
+                                        restSecondPast = 0
+                                        restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                                            withAnimation {
+                                                restSecondPast += 1
+                                                if restSecondPast >= restSecondTotal {
+                                                    restTicker?.invalidate()
+                                                }
+                                            }
+                                        })
                                     }
                                 })
                             }
                         }) {
                             Circle()
-                                    .stroke(Color.green, lineWidth: 2) // FIXME mask导致相同粗细但是展示不同
-                                    .frame(width: 96, height: 96)
+                                    .stroke(Color.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
+                                    .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                     .overlay(Text(NSLocalizedString("finish_record", comment: ""))
-                                            .font(.system(.body).bold())
+                                            .font(.system(.title2).bold())
                                             .foregroundColor(Color.green))
                         }
                     }
@@ -199,6 +207,9 @@ struct TrainingView: View {
                     }
                 }
     }
+
+    static let btnSize: CGFloat = 96
+    static let btnBorder: CGFloat = 4
 }
 
 struct TimerBtnMask: Shape {
@@ -222,7 +233,6 @@ struct TimerBtnMask: Shape {
         let radius = diameter / 2.0
         let center = CGPoint(x: rect.midX, y: rect.midY)
         let start = CGPoint(x: rect.midX, y: 0)
-        GlobalInst.logger.info("path: \(cur) / \(total)")
         return Path { path in
             path.move(to: start)
             path.addLine(to: center)
