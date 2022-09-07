@@ -197,8 +197,78 @@ struct TrainingView: View {
                 }
                 Spacer()
                 TrainingCardView(idx: $order, record: record, isPrimary: true)
+                Spacer().frame(height: 16)
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        if record.weight > 0 {
+                            withAnimation {
+                                record.weight -= 0.5
+                                GlobalInst.SaveContext()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "minus.circle")
+                    }
+                    Text(NSLocalizedString("weight", comment: ""))
+                    Button(action: {
+                        withAnimation {
+                            record.weight += 0.5
+                            GlobalInst.SaveContext()
+                        }
+                    }) {
+                        Image(systemName: "plus.circle")
+                    }
+                    Spacer()
+                    Button(action: {
+                        if record.rep > 0 {
+                            withAnimation {
+                                record.rep -= -1
+                                GlobalInst.SaveContext()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "minus.circle")
+                    }
+                    Text(NSLocalizedString("rep", comment: ""))
+                    Button(action: {
+                        withAnimation {
+                            record.rep += 1
+                            GlobalInst.SaveContext()
+                        }
+                    }) {
+                        Image(systemName: "plus.circle")
+                    }
+                }
+                        .foregroundColor(Color.secondary)
                 Spacer()
                 HStack {
+                    Spacer()
+                    // timer short cut
+                    Button(action: {
+                        if restSecondTotal <= restSecondPast {
+                            restSecondTotal = 15
+                            restSecondPast = 0
+                            restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                                withAnimation {
+                                    restSecondPast += 1
+                                    if restSecondPast >= restSecondTotal {
+                                        restTicker?.invalidate()
+                                    }
+                                }
+                            })
+                        } else {
+                            restSecondTotal += 15
+                        }
+                    }) {
+                        Circle()
+                                .stroke(Color.green)
+                                .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
+                                .overlay(Text("+15s")
+                                        .font(.system(.title2).bold().monospaced())
+                                        .foregroundColor(Color.green))
+                    }
+                    Spacer()
                     if status == RecordStatus.statusInit.rawValue {
                         Button(action: {
                             withAnimation {
@@ -227,30 +297,6 @@ struct TrainingView: View {
                             }
                         }
                     } else {
-                        HStack {
-                            Spacer()
-                            VStack {
-                                Button(action: {
-                                    training.recordList![order].weight += 0.5
-                                    GlobalInst.SaveContext()
-                                }) {
-                                    Image(systemName:"chevron.up")
-                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                }
-                                Text(NSLocalizedString("weight", comment: ""))
-                                        .frame(height: TrainingView.btnSize / 4)
-                                Button(action: {
-                                    if training.recordList![order].weight > 0 {
-                                        training.recordList![order].weight -= 0.5
-                                        GlobalInst.SaveContext()
-                                    }
-                                }) {
-                                    Image(systemName:"chevron.down")
-                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                }
-                            }
-                                    .foregroundColor(.secondary)
-                            Spacer()
                             Button(action: {
                                 withAnimation {
                                     let oldOrder = order
@@ -287,31 +333,8 @@ struct TrainingView: View {
                                                 .font(.system(.title2).bold())
                                                 .foregroundColor(Color.green))
                             }
-                            Spacer()
-                            VStack {
-                                Button(action: {
-                                    training.recordList![order].rep += 1
-                                    GlobalInst.SaveContext()
-                                }) {
-                                    Image(systemName:"chevron.up")
-                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                }
-                                Text(NSLocalizedString("rep", comment: ""))
-                                        .frame(height: TrainingView.btnSize / 4)
-                                Button(action: {
-                                    if training.recordList![order].rep > 0 {
-                                        training.recordList![order].rep -= 1
-                                        GlobalInst.SaveContext()
-                                    }
-                                }) {
-                                    Image(systemName:"chevron.down")
-                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                }
-                            }
-                                    .foregroundColor(.secondary)
-                            Spacer()
-                        }
                     }
+                    Spacer()
                 }
                 Spacer()
                 // ProgressBar
@@ -378,12 +401,7 @@ struct TrainingCardView: View {
         VStack {
             if isPrimary {
                 HStack {
-                    Text("No. \(idx + 1)")
-                            .font(.title)
-                    Spacer()
-                }
-                HStack {
-                    Text(ExerciseType.descByVal(val: record.exerciseType))
+                    Text("No. \(idx + 1) \(ExerciseType.descByVal(val: record.exerciseType))")
                             .font(.title)
                     Spacer()
                 }
@@ -395,11 +413,7 @@ struct TrainingCardView: View {
                 }
             } else {
                 HStack {
-                    Text("No. \(idx + 1)")
-                    Spacer()
-                }
-                HStack {
-                    Text(ExerciseType.descByVal(val: record.exerciseType))
+                    Text("No. \(idx + 1) \(ExerciseType.descByVal(val: record.exerciseType))")
                     Spacer()
                     Text(formatDetail()).font(GlobalInst.GetFont())
                 }
