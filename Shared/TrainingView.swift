@@ -267,7 +267,9 @@ struct TrainingView: View {
                                 .overlay(Text("+15s")
                                         .font(.system(.title2).bold().monospaced())
                                         .foregroundColor(Color.green))
+                                .opacity(status != RecordStatus.statusInit.rawValue ? 0.3 : 1)
                     }
+                            .disabled(status != RecordStatus.statusInit.rawValue)
                     Spacer()
                     if status == RecordStatus.statusInit.rawValue {
                         Button(action: {
