@@ -37,7 +37,9 @@ struct MainView: View {
                     Spacer()
 
                     HStack {
-                        if training.status != RecordStatus.statusInit.rawValue {
+                        if training.status == RecordStatus.statusDone.rawValue {
+                            Text(NSLocalizedString("congratulations", comment: ""))
+                        } else if training.status != RecordStatus.statusInit.rawValue {
                             Spacer()
                             Button(action: {
                                 withAnimation {
@@ -52,36 +54,39 @@ struct MainView: View {
                                 }
                             }) {
                                 Text(NSLocalizedString("del_training", comment: ""))
-                                        .frame(width: 72, height: 72)
+                                        .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
                                         .foregroundColor(Color.white)
                                         .background(Color.red)
                                         .clipShape(Circle())
+                                        .font(.body.bold())
                             }
                             Spacer()
 
                             Spacer()
                             NavigationLink(destination: TrainingView(training: training)) {
                                 Text(getStartOrContinue())
-                                        .frame(width: 72, height: 72)
+                                        .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
                                         .foregroundColor(Color.white)
                                         .background(Color.green)
                                         .clipShape(Circle())
+                                        .font(.body.bold())
                             }
                             Spacer()
                         } else {
                             NavigationLink(destination: TrainingEditorView(training: training)) {
                                 Text(NSLocalizedString("create_training", comment: ""))
-                                        .frame(width: 72, height: 72)
+                                        .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
                                         .foregroundColor(Color.white)
                                         .background(Color.green)
                                         .clipShape(Circle())
+                                        .font(.body.bold())
                             }
                         }
                     }
                             .background(Color.clear.opacity(1))
                     Spacer()
                 }
-                        .navigationBarTitle("Today")
+                        .navigationBarTitle(training.status == RecordStatus.statusInit.rawValue ? NSLocalizedString("inspire", comment: "") : "Today")
             }
                     .tabItem {
                         Label("Today", systemImage: "play")

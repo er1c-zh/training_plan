@@ -37,6 +37,9 @@ extension Global {
     func GetFont() -> Font {
         Font.system(.body).monospaced()
     }
+    func GetBtnSize() -> CGFloat {
+        return 96
+    }
 }
 
 struct Config {

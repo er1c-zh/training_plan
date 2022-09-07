@@ -380,7 +380,7 @@ struct TrainingView: View {
                 }
     }
 
-    static let btnSize: CGFloat = 96
+    static let btnSize: CGFloat = GlobalInst.GetBtnSize()
     static let btnBorder: CGFloat = 4
 }
 
