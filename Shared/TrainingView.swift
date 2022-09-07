@@ -137,7 +137,7 @@ struct TrainingView: View {
     var body: some View {
         VStack {
             if order == -1 {
-                Text("done")
+                Text(NSLocalizedString("congratulations", comment: ""))
             } else {
                 if preIdx != -1 {
                     TrainingCardView(idx: $preIdx, record: preRecord, isPrimary: false)
@@ -299,6 +299,7 @@ struct TrainingView: View {
                             }
                         }
                     } else {
+                        if order + 1 != training.recordList!.count {
                             Button(action: {
                                 withAnimation {
                                     let oldOrder = order
@@ -335,6 +336,24 @@ struct TrainingView: View {
                                                 .font(.system(.title2).bold())
                                                 .foregroundColor(Color.green))
                             }
+                        } else {
+                            Button(action: {
+                            }) {
+                                Circle()
+                                        .stroke(Color.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
+                                        .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
+                                        .overlay(Text(NSLocalizedString("finish_record", comment: ""))
+                                                .font(.system(.title2).bold())
+                                                .foregroundColor(Color.green))
+                                        .onTapGesture(count: 3, perform: {
+                                            training.recordList![order].status = Int16(RecordStatus.statusDone.rawValue)
+                                            training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
+                                            training.status = Int16(RecordStatus.statusDone.rawValue)
+                                            training.versionID += 1
+                                            GlobalInst.SaveContext()
+                                        })
+                            }
+                        }
                     }
                     Spacer()
                 }
