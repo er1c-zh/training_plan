@@ -68,6 +68,9 @@ struct TrainingView: View {
     @State private var restSecondPast: Int64 = 1
     @State private var restTicker: Timer?
 
+    @State private var preIdx: Int
+    @State private var preRecord: Record
+
     init(training: Training) {
         self.training = training
         var o: Int = -1
@@ -93,6 +96,19 @@ struct TrainingView: View {
             _record = State<Record>.init(initialValue: training.recordList![o])
         } else {
             _record = State<Record>.init(initialValue: Record())
+        }
+        if o != 0 {
+            if o == -1 {
+                let idx = training.recordList == nil ? -1 : training.recordList!.count - 1
+                _preIdx = State<Int>.init(initialValue: idx)
+                _preRecord = State<Record>.init(initialValue: idx >= 0 ? training.recordList![idx] : Record())
+            } else {
+                _preIdx = State<Int>.init(initialValue: o - 1)
+                _preRecord = State<Record>.init(initialValue: training.recordList![o - 1])
+            }
+        } else {
+            _preIdx = State<Int>.init(initialValue: -1)
+            _preRecord = State<Record>.init(initialValue: Record())
         }
     }
 
@@ -123,8 +139,64 @@ struct TrainingView: View {
             if order == -1 {
                 Text("done")
             } else {
+                if preIdx != -1 {
+                    TrainingCardView(idx: $preIdx, record: preRecord, isPrimary: false)
+                    Spacer().frame(height: 16)
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            if preRecord.weight > 0 {
+                                withAnimation {
+                                    preRecord.weight -= 0.5
+                                    GlobalInst.SaveContext()
+                                }
+                            }
+                        }) {
+                            Image(systemName: "minus.circle")
+                        }
+                        Text(NSLocalizedString("weight", comment: ""))
+                        Button(action: {
+                            withAnimation {
+                                preRecord.weight += 0.5
+                                GlobalInst.SaveContext()
+                            }
+                        }) {
+                            Image(systemName: "plus.circle")
+                        }
+                        Spacer()
+                        Button(action: {
+                            if preRecord.rep > 0 {
+                                withAnimation {
+                                    preRecord.rep -= -1
+                                    GlobalInst.SaveContext()
+                                }
+                            }
+                        }) {
+                            Image(systemName: "minus.circle")
+                        }
+                        Text(NSLocalizedString("rep", comment: ""))
+                        Button(action: {
+                            withAnimation {
+                                preRecord.rep += 1
+                                GlobalInst.SaveContext()
+                            }
+                        }) {
+                            Image(systemName: "plus.circle")
+                        }
+                    }
+                            .foregroundColor(Color.secondary)
+                } else {
+                    TrainingCardView(idx: $order, record: record, isPrimary: false)
+                            .mask(Path().fill())
+                    // placeholder
+                    Spacer().frame(height: 16)
+                    HStack {
+                        Text("placeholder")
+                                .mask(Path().fill())
+                    }
+                }
                 Spacer()
-                TrainingCardView(idx: $order, record: record)
+                TrainingCardView(idx: $order, record: record, isPrimary: true)
                 Spacer()
                 HStack {
                     if status == RecordStatus.statusInit.rawValue {
@@ -158,22 +230,24 @@ struct TrainingView: View {
                         HStack {
                             Spacer()
                             VStack {
-                                Image(systemName:"chevron.up")
-                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                        .onTapGesture {
-                                            training.recordList![order].weight += 0.5
-                                            GlobalInst.SaveContext()
-                                        }
+                                Button(action: {
+                                    training.recordList![order].weight += 0.5
+                                    GlobalInst.SaveContext()
+                                }) {
+                                    Image(systemName:"chevron.up")
+                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                }
                                 Text(NSLocalizedString("weight", comment: ""))
                                         .frame(height: TrainingView.btnSize / 4)
-                                Image(systemName:"chevron.down")
-                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                        .onTapGesture {
-                                            if training.recordList![order].weight > 0 {
-                                                training.recordList![order].weight -= 0.5
-                                                GlobalInst.SaveContext()
-                                            }
-                                        }
+                                Button(action: {
+                                    if training.recordList![order].weight > 0 {
+                                        training.recordList![order].weight -= 0.5
+                                        GlobalInst.SaveContext()
+                                    }
+                                }) {
+                                    Image(systemName:"chevron.down")
+                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                }
                             }
                                     .foregroundColor(.secondary)
                             Spacer()
@@ -190,6 +264,8 @@ struct TrainingView: View {
                                             return
                                         }
                                         withAnimation {
+                                            preIdx = oldOrder
+                                            preRecord = training.recordList![preIdx]
                                             restSecondTotal = record.restInSec
                                             restSecondPast = 0
                                             restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
@@ -213,22 +289,24 @@ struct TrainingView: View {
                             }
                             Spacer()
                             VStack {
-                                Image(systemName:"chevron.up")
-                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                        .onTapGesture {
-                                            training.recordList![order].rep += 1
-                                            GlobalInst.SaveContext()
-                                        }
+                                Button(action: {
+                                    training.recordList![order].rep += 1
+                                    GlobalInst.SaveContext()
+                                }) {
+                                    Image(systemName:"chevron.up")
+                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                }
                                 Text(NSLocalizedString("rep", comment: ""))
                                         .frame(height: TrainingView.btnSize / 4)
-                                Image(systemName:"chevron.down")
-                                        .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
-                                        .onTapGesture {
-                                            if training.recordList![order].rep > 0 {
-                                                training.recordList![order].rep -= 1
-                                                GlobalInst.SaveContext()
-                                            }
-                                        }
+                                Button(action: {
+                                    if training.recordList![order].rep > 0 {
+                                        training.recordList![order].rep -= 1
+                                        GlobalInst.SaveContext()
+                                    }
+                                }) {
+                                    Image(systemName:"chevron.down")
+                                            .frame(width: TrainingView.btnSize / 2, height: TrainingView.btnSize / 4)
+                                }
                             }
                                     .foregroundColor(.secondary)
                             Spacer()
@@ -236,6 +314,12 @@ struct TrainingView: View {
                     }
                 }
                 Spacer()
+                // ProgressBar
+                ProgressView(value: Double(order + 1) / Double(training.recordList!.count)) {
+                    Text(String(format: "%d/%d", order + 1, training.recordList!.count))
+                            .foregroundColor(Color.secondary)
+                }
+                        .tint(Color.green)
             }
         }
                 .padding(32)
@@ -289,23 +373,36 @@ struct TimerBtnMask: Shape {
 struct TrainingCardView: View {
     @Binding var idx: Int
     @ObservedObject var record: Record
+    @State var isPrimary: Bool
     var body: some View {
         VStack {
-            HStack {
-                Text("No. \(idx + 1)")
-                        .font(.title)
-                Spacer()
-            }
-            HStack{
-                Text(ExerciseType.descByVal(val: record.exerciseType))
-                        .font(.title)
-                Spacer()
-            }
-            Spacer().frame(height: 32)
-            HStack {
-                Text(formatDetail()).font(GlobalInst.GetFont())
-                Spacer()
-                Text(formatDetailSuffix()).font(GlobalInst.GetFont())
+            if isPrimary {
+                HStack {
+                    Text("No. \(idx + 1)")
+                            .font(.title)
+                    Spacer()
+                }
+                HStack {
+                    Text(ExerciseType.descByVal(val: record.exerciseType))
+                            .font(.title)
+                    Spacer()
+                }
+                Spacer().frame(height: 32)
+                HStack {
+                    Text(formatDetail()).font(GlobalInst.GetFont())
+                    Spacer()
+                    Text(formatDetailSuffix()).font(GlobalInst.GetFont())
+                }
+            } else {
+                HStack {
+                    Text("No. \(idx + 1)")
+                    Spacer()
+                }
+                HStack {
+                    Text(ExerciseType.descByVal(val: record.exerciseType))
+                    Spacer()
+                    Text(formatDetail()).font(GlobalInst.GetFont())
+                }
             }
         }
     }
