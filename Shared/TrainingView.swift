@@ -167,7 +167,7 @@ struct TrainingView: View {
                         Button(action: {
                             if preRecord.rep > 0 {
                                 withAnimation {
-                                    preRecord.rep -= -1
+                                    preRecord.rep -= 1
                                     GlobalInst.SaveContext()
                                 }
                             }
@@ -223,7 +223,7 @@ struct TrainingView: View {
                     Button(action: {
                         if record.rep > 0 {
                             withAnimation {
-                                record.rep -= -1
+                                record.rep -= 1
                                 GlobalInst.SaveContext()
                             }
                         }

@@ -89,6 +89,7 @@
 		1AB7CC9C6354D472C4343FD2 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Assets.xcassets/Localizable.strings; sourceTree = "<group>"; };
 		1AB7CD05EB1EB3DB7FD086C1 /* training.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = training.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB7CEDF3D5A5E12D66C98D0 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
+		87E05F1D28CBA19F009A1CC6 /* training--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "training--iOS--Info.plist"; sourceTree = "<group>"; };
 		87E8A7A328B93AE50058DB67 /* Exercise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exercise.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -127,6 +128,7 @@
 		1AB7C5289A507492E7A80EAC = {
 			isa = PBXGroup;
 			children = (
+				87E05F1D28CBA19F009A1CC6 /* training--iOS--Info.plist */,
 				1AB7CA89BA54B2BAA6E803D6 /* Products */,
 				1AB7CB00143C7A8D67CF100F /* Shared */,
 				1AB7CDAF2250D28D11C55105 /* macOS */,
@@ -529,6 +531,7 @@
 				DEVELOPMENT_TEAM = 5DU2RWWRZB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "training--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -610,6 +613,7 @@
 				DEVELOPMENT_TEAM = 5DU2RWWRZB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "training--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
