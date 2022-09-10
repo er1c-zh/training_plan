@@ -14,7 +14,7 @@ extension Record {
     }
 
     struct Data: Identifiable {
-        var id: Int64 = GlobalInst.GetMillisecondTimestamp()
+        var id: Int64 = GlobalInst.GetNanosecondTimestamp()
         var exerciseType: Int16 = ExerciseType.Unknown.rawValue
         var rep: Int64 = 0
         var tag: String? = ""

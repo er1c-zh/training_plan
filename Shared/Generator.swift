@@ -33,7 +33,7 @@ struct Generator {
             var curWeight: Double = min
             while cntWarmUp < et.countOfWarmUpSet() || curWeight + 20 < max {
                 var tmp: Record.Data = Record.Data()
-                tmp.id = GlobalInst.GetMillisecondTimestamp()
+                tmp.id = GlobalInst.GetNanosecondTimestamp()
                 tmp.exerciseType = et.rawValue
                 tmp.weight = curWeight
                 tmp.restInSec = Int64(15 * (cntWarmUp + 1))
@@ -48,7 +48,7 @@ struct Generator {
             var cntFormal: Int = 0
             while cntFormal < et.countOfFormalSet() {
                 var tmp: Record.Data = Record.Data()
-                tmp.id = GlobalInst.GetMillisecondTimestamp()
+                tmp.id = GlobalInst.GetNanosecondTimestamp()
                 tmp.exerciseType = et.rawValue
                 tmp.weight = max
                 tmp.restInSec = 120

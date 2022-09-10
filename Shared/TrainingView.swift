@@ -64,9 +64,11 @@ struct TrainingView: View {
     @State private var order: Int
     @State private var status: Int
     @State private var record: Record
+
+    @State private var restFrom: Int64 = 0
     @State private var restSecondTotal: Int64 = 1
-    @State private var restSecondPast: Int64 = 1
-    @State private var restTicker: Timer?
+    @State private var restAlready: Int64 = 1
+    @State private var isTimerInit: Bool = false
 
     @State private var preIdx: Int
     @State private var preRecord: Record
@@ -126,11 +128,15 @@ struct TrainingView: View {
         return -1
     }
 
+    func getPassedSecondCountFromRestFrom() -> Int64 {
+        GlobalInst.GetTimestamp() - restFrom
+    }
+
     func restString() -> String {
-        if restSecondPast >= restSecondTotal {
+        if getPassedSecondCountFromRestFrom() >= restSecondTotal {
             return NSLocalizedString("start_record", comment: "")
         }
-        let s = restSecondTotal - restSecondPast
+        let s = restSecondTotal - restAlready
         return String(format: "%ld′%02ld″", s / 60, s % 60)
     }
 
@@ -246,17 +252,9 @@ struct TrainingView: View {
                     Spacer()
                     // timer short cut
                     Button(action: {
-                        if restSecondTotal <= restSecondPast {
+                        if getPassedSecondCountFromRestFrom() >= restSecondTotal {
                             restSecondTotal = 15
-                            restSecondPast = 0
-                            restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
-                                withAnimation {
-                                    restSecondPast += 1
-                                    if restSecondPast >= restSecondTotal {
-                                        restTicker?.invalidate()
-                                    }
-                                }
-                            })
+                            restFrom = GlobalInst.GetTimestamp()
                         } else {
                             restSecondTotal += 15
                         }
@@ -278,7 +276,8 @@ struct TrainingView: View {
                                 training.recordList![order].startTimestamp = Int64(Date().timeIntervalSince1970)
                                 training.versionID += 1
                                 GlobalInst.SaveContext()
-                                restTicker?.invalidate()
+                                // reset timer
+                                restSecondTotal = getPassedSecondCountFromRestFrom()
                             }
                         }) {
                             ZStack {
@@ -288,14 +287,14 @@ struct TrainingView: View {
                                         .overlay(Text(restString())
                                                 .font(.system(.title2).bold().monospaced())
                                                 .foregroundColor(Color.white))
-                                        .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondPast, clockwise: false).fill(Color.white))
+                                        .mask(TimerBtnMask(total: restSecondTotal, cur: restAlready, clockwise: false).fill(Color.white))
                                 Circle()
                                         .stroke(Color.green, lineWidth: TrainingView.btnBorder)
                                         .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                         .overlay(Text(restString())
                                                 .font(.system(.title2).bold().monospaced())
                                                 .foregroundColor(Color.green))
-                                        .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondTotal - restSecondPast, clockwise: true).fill(Color.white))
+                                        .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondTotal - restAlready, clockwise: true).fill(Color.white))
                             }
                         }
                     } else {
@@ -308,23 +307,21 @@ struct TrainingView: View {
                                     training.versionID += 1
                                     GlobalInst.SaveContext()
                                     // FIXME Refreshing rest second should wait didChange listener finished its work.
-                                    Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false, block: { _ in
-                                        if oldOrder == order || order == -1 {
+                                    Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { timer in
+                                        if oldOrder == order {
+                                            // waiting for didChange listener finish
+                                            return
+                                        }
+                                        timer.invalidate()
+                                        if order == -1 {
+                                            // done
                                             return
                                         }
                                         withAnimation {
                                             preIdx = oldOrder
                                             preRecord = training.recordList![preIdx]
                                             restSecondTotal = record.restInSec
-                                            restSecondPast = 0
-                                            restTicker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
-                                                withAnimation {
-                                                    restSecondPast += 1
-                                                    if restSecondPast >= restSecondTotal {
-                                                        restTicker?.invalidate()
-                                                    }
-                                                }
-                                            })
+                                            restFrom = GlobalInst.GetTimestamp()
                                         }
                                     })
                                 }
@@ -376,6 +373,21 @@ struct TrainingView: View {
                         } else {
                             status = RecordStatus.statusInit.rawValue
                         }
+                    }
+                }
+                .onAppear {
+                    if !isTimerInit {
+                        Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                            let passed = getPassedSecondCountFromRestFrom()
+                            if passed <= restSecondTotal {
+                                withAnimation {
+                                    restAlready = passed
+                                }
+                            } else if restAlready < passed {
+                                restAlready = restSecondTotal
+                            }
+                        })
+                        isTimerInit = true
                     }
                 }
     }

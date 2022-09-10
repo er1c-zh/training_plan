@@ -165,7 +165,7 @@ extension Training {
         }
 
         recordList = tmpList
-        versionID = GlobalInst.GetMillisecondTimestamp()
+        versionID = GlobalInst.GetNanosecondTimestamp()
     }
 
     static func getDoingTraining() -> Training {
@@ -186,7 +186,7 @@ extension Training {
         }
         let new = Training.init(context: GlobalInst.GetContext())
         new.status = Int16(RecordStatus.statusInit.rawValue)
-        new.trainingID = GlobalInst.GetMillisecondTimestamp()
+        new.trainingID = GlobalInst.GetNanosecondTimestamp()
         return new
     }
 
@@ -210,7 +210,7 @@ extension Training {
             } else if exerciseTypeList[i].rawValue < oldRecordList[j].exerciseType {
                 isDelta = true
                 let tmp = Record.init(context: GlobalInst.GetContext())
-                tmp.recordID = GlobalInst.GetMillisecondTimestamp()
+                tmp.recordID = GlobalInst.GetNanosecondTimestamp()
                 tmp.exerciseType = exerciseTypeList[i].rawValue
                 tmp.status = Int16(RecordStatus.statusTemplate.rawValue)
                 newRecordList.append(tmp)
@@ -225,7 +225,7 @@ extension Training {
         while i < exerciseTypeList.count {
             isDelta = true
             let tmp = Record.init(context: GlobalInst.GetContext())
-            tmp.recordID = GlobalInst.GetMillisecondTimestamp()
+            tmp.recordID = GlobalInst.GetNanosecondTimestamp()
             tmp.exerciseType = exerciseTypeList[i].rawValue
             newRecordList.append(tmp)
             i += 1

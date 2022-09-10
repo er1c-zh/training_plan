@@ -29,7 +29,11 @@ extension Global {
         }
     }
 
-    func GetMillisecondTimestamp() -> Int64 {
+    func GetTimestamp() -> Int64 {
+        Int64(Date().timeIntervalSince1970)
+    }
+
+    func GetNanosecondTimestamp() -> Int64 {
         Int64(Date().timeIntervalSince1970 * 1000000)
     }
 
