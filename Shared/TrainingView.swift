@@ -140,6 +140,35 @@ struct TrainingView: View {
         return String(format: "%ld′%02ld″", s / 60, s % 60)
     }
 
+    func registerRestEndNotification(fireAfterSecond : Int64) {
+        let fireAfterSecond = fireAfterSecond + 1
+        cancelRestEndNotification()
+        let content = UNMutableNotificationContent()
+        content.body = NSLocalizedString("rest_end", comment: "")
+        content.sound = .default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(fireAfterSecond), repeats: false)
+
+        // Create the request
+        let uuidString = "dev.er1c.dev.rest_end"
+        let request = UNNotificationRequest(identifier: uuidString,
+                content: content, trigger: trigger)
+
+        // Schedule the request with the system.
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.add(request) { (error) in
+            if error != nil {
+                print("add notification fail: \(error!)")
+            }
+            GlobalInst.logger.info("register rest_end notification.")
+        }
+    }
+
+    func cancelRestEndNotification() {
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["dev.er1c.dev.rest_end"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["dev.er1c.dev.rest_end"])
+    }
+
     var body: some View {
         VStack {
             if order == -1 {
@@ -258,6 +287,7 @@ struct TrainingView: View {
                         } else {
                             restSecondTotal += 15
                         }
+                        registerRestEndNotification(fireAfterSecond: restSecondTotal - getPassedSecondCountFromRestFrom())
                     }) {
                         Circle()
                                 .stroke(Color.green)
@@ -278,6 +308,7 @@ struct TrainingView: View {
                                 GlobalInst.SaveContext()
                                 // reset timer
                                 restSecondTotal = getPassedSecondCountFromRestFrom()
+                                cancelRestEndNotification()
                             }
                         }) {
                             ZStack {
@@ -323,6 +354,7 @@ struct TrainingView: View {
                                             restSecondTotal = record.restInSec
                                             restFrom = GlobalInst.GetTimestamp()
                                         }
+                                        registerRestEndNotification(fireAfterSecond: restSecondTotal)
                                     })
                                 }
                             }) {
