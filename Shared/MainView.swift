@@ -102,13 +102,6 @@ struct MainView: View {
                     }
                     .tag(2)
 
-            NavigationView {
-                DebugView()
-            }
-                    .tabItem {
-                        Text("Debug")
-                    }
-                    .tag(3)
         }
     }
 

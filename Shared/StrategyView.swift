@@ -132,6 +132,12 @@ struct StrategyView: View {
                     Text(NSLocalizedString("rest_between_sets_unit", comment: ""))
                 }
             })
+
+            Section("debug") {
+                NavigationLink(destination: DebugView()) {
+                    Text("debug")
+                }
+            }
         }
                 .font(GlobalInst.GetFont())
                 .listStyle(.insetGrouped)
