@@ -14,6 +14,9 @@ struct Global {
             WidthInputSuffix: 36,
             WeightUnit: "kg"
     )
+
+    // theme
+    let green = Color.init("eGreen")
 }
 
 extension Global {

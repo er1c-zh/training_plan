@@ -169,6 +169,14 @@ struct TrainingView: View {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["dev.er1c.dev.rest_end"])
     }
 
+    func startSet() {
+
+    }
+
+    func finishSet() {
+
+    }
+
     var body: some View {
         VStack {
             if order == -1 {
@@ -290,11 +298,11 @@ struct TrainingView: View {
                         registerRestEndNotification(fireAfterSecond: restSecondTotal - getPassedSecondCountFromRestFrom())
                     }) {
                         Circle()
-                                .stroke(Color.green)
+                                .stroke(GlobalInst.green)
                                 .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                 .overlay(Text("+15s")
                                         .font(.system(.title2).bold().monospaced())
-                                        .foregroundColor(Color.green))
+                                        .foregroundColor(GlobalInst.green))
                                 .opacity(status != RecordStatus.statusInit.rawValue ? 0.3 : 1)
                     }
                             .disabled(status != RecordStatus.statusInit.rawValue)
@@ -313,18 +321,18 @@ struct TrainingView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                        .fill(Color.green)
+                                        .fill(GlobalInst.green)
                                         .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                         .overlay(Text(restString())
                                                 .font(.system(.title2).bold().monospaced())
-                                                .foregroundColor(Color.white))
+                                                .foregroundColor(Color.init(UIColor.systemBackground)))
                                         .mask(TimerBtnMask(total: restSecondTotal, cur: restAlready, clockwise: false).fill(Color.white))
                                 Circle()
-                                        .stroke(Color.green, lineWidth: TrainingView.btnBorder)
+                                        .stroke(GlobalInst.green, lineWidth: TrainingView.btnBorder)
                                         .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                         .overlay(Text(restString())
                                                 .font(.system(.title2).bold().monospaced())
-                                                .foregroundColor(Color.green))
+                                                .foregroundColor(GlobalInst.green))
                                         .mask(TimerBtnMask(total: restSecondTotal, cur: restSecondTotal - restAlready, clockwise: true).fill(Color.white))
                             }
                         }
@@ -332,6 +340,7 @@ struct TrainingView: View {
                         if order + 1 != training.recordList!.count {
                             Button(action: {
                                 withAnimation {
+                                    restAlready = 0 // fix: draw empty mask when waiting for calculate new timer
                                     let oldOrder = order
                                     training.recordList![order].status = Int16(RecordStatus.statusDone.rawValue)
                                     training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
@@ -359,21 +368,21 @@ struct TrainingView: View {
                                 }
                             }) {
                                 Circle()
-                                        .stroke(Color.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
+                                        .stroke(GlobalInst.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
                                         .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                         .overlay(Text(NSLocalizedString("finish_record", comment: ""))
                                                 .font(.system(.title2).bold())
-                                                .foregroundColor(Color.green))
+                                                .foregroundColor(GlobalInst.green))
                             }
                         } else {
                             Button(action: {
                             }) {
                                 Circle()
-                                        .stroke(Color.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
+                                        .stroke(GlobalInst.green, lineWidth: TrainingView.btnBorder) // FIXME mask导致相同粗细但是展示不同
                                         .frame(width: TrainingView.btnSize, height: TrainingView.btnSize)
                                         .overlay(Text(NSLocalizedString("finish_record", comment: ""))
                                                 .font(.system(.title2).bold())
-                                                .foregroundColor(Color.green))
+                                                .foregroundColor(GlobalInst.green))
                                         .onTapGesture(count: 3, perform: {
                                             training.recordList![order].status = Int16(RecordStatus.statusDone.rawValue)
                                             training.recordList![order].finishTimestamp = Int64(Date().timeIntervalSince1970)
@@ -392,7 +401,7 @@ struct TrainingView: View {
                     Text(String(format: "%d/%d", order + 1, training.recordList!.count))
                             .foregroundColor(Color.secondary)
                 }
-                        .tint(Color.green)
+                        .tint(GlobalInst.green)
             }
         }
                 .padding(32)
