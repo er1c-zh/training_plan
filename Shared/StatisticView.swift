@@ -53,13 +53,10 @@ struct StatisticRowView : View {
                 HStack {
                     Spacer()
                     ForEach(getExerciseList()) { et in
-                        RoundedRectangle(cornerRadius: 4)
-                                .stroke(lineWidth: 1)
-                                .frame(width: 32, height: 16)
-                                .overlay(
-                                        Text(et.Desc())
-                                                .font(.system(.footnote))
-                                )
+                        Text(et.Desc())
+                                .font(.system(.footnote))
+                                .padding(2)
+                                .background(RoundedRectangle(cornerRadius: 4).stroke())
                                 .foregroundColor(Color.init(UIColor.secondaryLabel))
                     }
                 }
