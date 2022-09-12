@@ -152,7 +152,8 @@ extension Training {
                 tmpList.append(r)
             } else {
                 let r = Record(context: GlobalInst.GetContext())
-                r.status = 0
+                r.status = Int16(RecordStatus.statusInit.rawValue)
+                r.trainingID = trainingID
                 r.update(from: rd)
                 tmpList.append(r)
             }

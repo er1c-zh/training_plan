@@ -18,6 +18,10 @@ struct StatisticView : View {
                 ForEach(trainingList) { r in
                     StatisticRowView(training: r, selectedTrainingID: $trainingIDTapped)
                             .contentShape(Rectangle())
+                            .onTapGesture(count: 5, perform: {
+                                GlobalInst.GetContext().delete(r)
+                                GlobalInst.SaveContext()
+                            })
                             .onTapGesture {
                                 withAnimation {
                                     if trainingIDTapped == r.trainingID {

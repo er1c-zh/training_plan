@@ -13,8 +13,10 @@ struct TrainingPreviewView: View {
         VStack {
             ForEach(data.recordListGroupByExerciseType) { rl in
                 TrainingPreviewRowView(row: rl.Data)
+                        .padding(8)
             }
         }
+                .padding(8)
                 .cornerRadius(20) /// make the background rounded
                 .overlay( /// apply a rounded border
                         RoundedRectangle(cornerRadius: 20)
@@ -26,18 +28,10 @@ struct TrainingPreviewView: View {
 struct TrainingPreviewRowView: View {
     @State var row: [Record.Data]
     var body: some View {
-        VStack{
-            Spacer().frame(height: 16)
-            HStack {
-                Spacer()
-                Text(formatTitle())
-                Spacer()
-                Spacer()
-                Spacer()
-                Text(formatSuffix())
-                Spacer()
-            }
-            Spacer().frame(height: 16)
+        HStack {
+            Text(formatTitle())
+            Spacer()
+            Text(formatSuffix())
         }
                 .font(GlobalInst.GetFont())
     }
