@@ -172,7 +172,8 @@ extension Training {
         let fr = NSFetchRequest<Training>()
         fr.entity = Training.entity()
         fr.fetchLimit = 1
-        fr.predicate = NSPredicate(format: "status == %d || status == %d", RecordStatus.statusDoing.rawValue, RecordStatus.statusInit.rawValue)
+        fr.predicate = NSPredicate(format: "status == %d || status == %d || status == %d",
+                RecordStatus.statusDoing.rawValue, RecordStatus.statusInit.rawValue, RecordStatus.statusDone.rawValue)
         fr.sortDescriptors = [
             NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
         ]
