@@ -43,6 +43,12 @@
 "rest_between_sets" = "组间休息";
 "rest_between_sets_unit" = "秒";
 
+// Statistic
+"statistic_title" = "统计";
+"title_doing" = "进行中";
+"title_done" = "已完成";
+"title_record" = "记录";
+
 // common
 "add" = "新增";
 "edit" = "编辑";

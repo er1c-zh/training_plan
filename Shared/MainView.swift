@@ -17,7 +17,7 @@ struct MainView: View {
         TabView(selection: $selection) {
             // 统计
             NavigationView {
-                Text("implement me")
+                StatisticView()
             }
                     .tabItem {
                         Label("Statistic", systemImage: "chart.xyaxis.line")
