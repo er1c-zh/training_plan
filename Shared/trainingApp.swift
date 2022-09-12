@@ -45,7 +45,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                         @escaping (UNNotificationPresentationOptions) -> Void) {
         GlobalInst.logger.info("get msg: \(notification.request.identifier)")
         if notification.request.identifier == "dev.er1c.dev.rest_end" {
-            completionHandler(.banner)
+            completionHandler([.banner, .sound, .alert])
             return
         }
         completionHandler(UNNotificationPresentationOptions(rawValue: 0))
