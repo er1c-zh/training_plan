@@ -28,7 +28,6 @@ struct MainView: View {
 
             NavigationView {
                 VStack {
-                    Spacer()
                     if training.status != RecordStatus.statusInit.rawValue {
                         TrainingPreviewView(data: training.data)
                                 .padding(32)
@@ -55,10 +54,10 @@ struct MainView: View {
                             }) {
                                 Text(NSLocalizedString("del_training", comment: ""))
                                         .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
-                                        .foregroundColor(Color.white)
-                                        .background(Color.red)
+                                        .foregroundColor(Color.init(UIColor.systemBackground))
+                                        .background(GlobalInst.red)
                                         .clipShape(Circle())
-                                        .font(.body.bold())
+                                        .font(.title2.bold())
                             }
                             Spacer()
 
@@ -66,25 +65,25 @@ struct MainView: View {
                             NavigationLink(destination: TrainingView(training: training)) {
                                 Text(getStartOrContinue())
                                         .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
-                                        .foregroundColor(Color.white)
-                                        .background(Color.green)
+                                        .foregroundColor(Color.init(UIColor.systemBackground))
+                                        .background(GlobalInst.green)
                                         .clipShape(Circle())
-                                        .font(.body.bold())
+                                        .font(.title2.bold())
                             }
                             Spacer()
                         } else {
                             NavigationLink(destination: TrainingEditorView(training: training)) {
                                 Text(NSLocalizedString("create_training", comment: ""))
                                         .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
-                                        .foregroundColor(Color.white)
-                                        .background(Color.green)
+                                        .foregroundColor(Color.init(UIColor.systemBackground))
+                                        .background(GlobalInst.green)
                                         .clipShape(Circle())
-                                        .font(.body.bold())
+                                        .font(.title2.bold())
                             }
                         }
                     }
                             .background(Color.clear.opacity(1))
-                    Spacer()
+                    Spacer().frame(height: 72)
                 }
                         .navigationBarTitle(training.status == RecordStatus.statusInit.rawValue ? NSLocalizedString("inspire", comment: "") : "Today")
             }

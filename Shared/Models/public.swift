@@ -17,6 +17,7 @@ struct Global {
 
     // theme
     let green = Color.init("eGreen")
+    let red = Color.init("eRed")
 }
 
 extension Global {
@@ -45,7 +46,7 @@ extension Global {
         Font.system(.body).monospaced()
     }
     func GetBtnSize() -> CGFloat {
-        return 96
+        96
     }
 }
 
