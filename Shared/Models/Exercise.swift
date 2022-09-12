@@ -15,6 +15,7 @@ enum ExerciseType : Int16 {
     case MilitaryPress = 4
     case BentOverRow = 5
     case PowerClean = 6
+    case SumoDeadLift = 7
 }
 
 extension ExerciseType : Identifiable {
@@ -25,7 +26,8 @@ extension ExerciseType : Identifiable {
         .Deadlift: NSLocalizedString("deadlift", comment: ""),
         .MilitaryPress: NSLocalizedString("military_press", comment: ""),
         .BentOverRow: NSLocalizedString("bent_over_row", comment: ""),
-        .PowerClean: NSLocalizedString("power_clean", comment: "")
+        .PowerClean: NSLocalizedString("power_clean", comment: ""),
+        .SumoDeadLift: NSLocalizedString("sumo_deadlift", comment: "")
     ]
 
     struct Config {
@@ -36,7 +38,7 @@ extension ExerciseType : Identifiable {
     }
 
     static func getAllExerciseType() -> [ExerciseType] {
-        [.BenchPress, .Squat, .Deadlift, .MilitaryPress, .BentOverRow, .PowerClean]
+        [.BenchPress, .Squat, .Deadlift, .MilitaryPress, .BentOverRow, .PowerClean, .SumoDeadLift]
     }
 
     static func descByVal(val: Int16) -> String {
@@ -60,7 +62,7 @@ extension ExerciseType : Identifiable {
 
     func MinWeight() -> Double {
         switch self {
-        case .Deadlift:
+        case .Deadlift, .SumoDeadLift:
             return 60
         default:
             return 20
@@ -69,7 +71,7 @@ extension ExerciseType : Identifiable {
 
     func countOfWarmUpSet() -> Int {
         switch self {
-        case .Deadlift:
+        case .Deadlift, .SumoDeadLift:
             return 2
         default:
             return 3
@@ -79,6 +81,8 @@ extension ExerciseType : Identifiable {
         switch self {
         case .Deadlift:
             return 1
+        case .SumoDeadLift:
+            return 2
         case .Squat, .BenchPress:
             return 3
         default:

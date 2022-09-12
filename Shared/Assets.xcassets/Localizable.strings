@@ -8,6 +8,7 @@
 "military_press" = "推举";
 "bent_over_row" = "划船";
 "power_clean" = "高翻";
+"sumo_deadlift" = "相扑硬拉";
 "unknown_exercise_type" = "未知动作";
 
 // UI
