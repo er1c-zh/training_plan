@@ -56,7 +56,12 @@ struct TrainingEditorView: View {
                     }
                             .onDelete { indexSet in
                                 withAnimation {
-                                    data.recordList.remove(atOffsets: indexSet)
+                                    for i in indexSet {
+                                        let r = rl.Data[i]
+                                        data.recordList.removeAll(where: { d in
+                                            d.id == r.id
+                                        })
+                                    }
                                     data.format()
                                 }
                             }
