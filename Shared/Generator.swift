@@ -5,9 +5,10 @@
 import Foundation
 
 struct Generator {
-    static public func gen(etList: [ExerciseType]) -> [Record.Data] {
+    static public func gen(etList: [ExerciseType.GenCfg]) -> [Record.Data] {
         var l: [Record.Data] = []
-        for et in etList {
+        for etCfg in etList {
+            let et = etCfg.ExerciseType
             var latest: Record?
             if let doneRecord = Record.getLastDoneFormalRecordByExerciseType(et: et) {
                 latest = doneRecord
@@ -24,14 +25,13 @@ struct Generator {
             }
             let min = et.MinWeight()
             GlobalInst.logger.info("max: \(latest == nil ? min : (latest!.weight < min ? min : latest!.weight))")
-            let (max, plateList) = calBar(weight: latest == nil ? min : (latest!.weight < min ? min : latest!.weight), needNext: true)
-            GlobalInst.logger.info("Generator.gen:  min: \(min) max: \(max)")
+            let (max, plateList) = calBar(weight: latest == nil ? min : (latest!.weight < min ? min : latest!.weight), needNext: etCfg.Strategy == ExerciseType.GenerateStrategy.progressiveOverload)
             var curL: [Record.Data] = []
 
             // TODO 三组热身 三组正式组 改为配置
             var cntWarmUp: Int = 0
             var curWeight: Double = min
-            while cntWarmUp < et.countOfWarmUpSet() || curWeight + 20 < max {
+            while cntWarmUp < et.countOfWarmUpSet() {
                 var tmp: Record.Data = Record.Data()
                 tmp.id = GlobalInst.GetNanosecondTimestamp()
                 tmp.exerciseType = et.rawValue
@@ -59,6 +59,7 @@ struct Generator {
 
             l.append(contentsOf: curL)
         }
+        GlobalInst.logger.info("gen done")
         return l
     }
 

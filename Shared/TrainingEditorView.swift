@@ -20,7 +20,7 @@ struct TrainingEditorView: View {
     @State private var recordData: Record.Data = Record.Data()
     @State private var isCreating: Bool = false
     @State private var isEditing: Bool = false
-    @State private var exerciseTypeListPicked: [ExerciseType] = []
+    @State private var exerciseTypeListPicked: [ExerciseType.GenCfg] = []
 
     var body: some View {
         List {
@@ -266,12 +266,20 @@ struct ExerciseTypePickerView: View {
 }
 
 struct MultipleExerciseTypePickerView: View {
-    @Binding var r: [ExerciseType]
+    @Binding var r: [ExerciseType.GenCfg]
+    @State var list : [ExerciseType.GenCfg] =  {
+        var result : [ExerciseType.GenCfg] = []
+        for et in ExerciseType.getAllExerciseType() {
+            result.append(ExerciseType.GenCfg(ExerciseType: et, Strategy: .progressiveOverload))
+        }
+        return result
+    }()
+
     var body: some View {
         List {
-            ForEach(ExerciseType.getAllExerciseType()) { t in
+            ForEach(list) { t in
                 HStack {
-                    Button(t.Desc()) {
+                    Button(t.ExerciseType.Desc()) {
                         withAnimation {
                             if getIndex(e: t) >= 0 {
                                 r.remove(at: getIndex(e: t))
@@ -280,19 +288,55 @@ struct MultipleExerciseTypePickerView: View {
                             }
                         }
                     }
+                    Spacer()
+                    Text("两天前")
+                            .font(.system(.footnote))
+                            .padding(2)
+                            .background(RoundedRectangle(cornerRadius: 4).stroke())
+                            .foregroundColor(Color.init(UIColor.secondaryLabel))
                     if getIndex(e: t) >= 0 {
-                        Spacer()
                         Text(String(format: "%d", getIndex(e: t) + 1))
+                                .padding(4)
+                                .font(.system(.body).monospaced())
+                                .background(Circle().stroke())
+                                .foregroundColor(Color.init(UIColor.secondaryLabel))
+                        Button(action: {
+                            withAnimation {
+                                toggleStrategy(e: t)
+                            }
+                        }) {
+                            Image(systemName: (t.Strategy == ExerciseType.GenerateStrategy.stayCurrentWeight) ? "arrow.forward" : "arrow.up.forward")
+                                    .foregroundColor(Color.init(UIColor.secondaryLabel))
+                                    .frame(width: 23)
+                        }
+                                .buttonStyle(.bordered)
                     }
                 }
             }
         }
     }
 
-    func getIndex(e: ExerciseType) -> Int {
+    func toggleStrategy(e: ExerciseType.GenCfg) {
+        var i = 0
+        while i < list.count {
+            if list[i].ExerciseType == e.ExerciseType {
+                list[i].Strategy = list[i].Strategy.toggle()
+            }
+            i += 1
+        }
+        i = 0
+        while i < r.count {
+            if r[i].ExerciseType == e.ExerciseType {
+                r[i].Strategy = r[i].Strategy.toggle()
+            }
+            i += 1
+        }
+    }
+
+    func getIndex(e: ExerciseType.GenCfg) -> Int {
         var i = 0
         while i < r.count {
-            if r[i] == e {
+            if r[i].ExerciseType == e.ExerciseType {
                 return i
             }
             i += 1

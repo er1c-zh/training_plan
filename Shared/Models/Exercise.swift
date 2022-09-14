@@ -37,6 +37,26 @@ extension ExerciseType : Identifiable {
         var CntOfFormal: Int = 0
     }
 
+    enum GenerateStrategy {
+        case stayCurrentWeight
+        case progressiveOverload
+
+        func toggle() -> GenerateStrategy {
+            if self == .stayCurrentWeight {
+                return .progressiveOverload
+            } else {
+                return .stayCurrentWeight
+            }
+        }
+    }
+
+    struct GenCfg : Identifiable {
+        var id : ExerciseType { ExerciseType }
+
+        var ExerciseType: ExerciseType
+        var Strategy: GenerateStrategy
+    }
+
     static func getAllExerciseType() -> [ExerciseType] {
         [.BenchPress, .Squat, .Deadlift, .MilitaryPress, .BentOverRow, .PowerClean, .SumoDeadLift]
     }
