@@ -9,28 +9,12 @@ struct StatisticView : View {
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)],
             predicate: NSPredicate(format: "status == %d || status == %d", RecordStatus.statusDoing.rawValue, RecordStatus.statusDone.rawValue))
     private var trainingList : FetchedResults<Training>
-    @State var trainingIDTapped : Int64 = 0
-    @State var refreshTrigger : Bool = true
 
     var body : some View {
         List {
             Section(NSLocalizedString("title_record", comment: "")) {
                 ForEach(trainingList) { r in
-                    StatisticRowView(training: r, selectedTrainingID: $trainingIDTapped)
-                            .contentShape(Rectangle())
-                            .onTapGesture(count: 5, perform: {
-                                GlobalInst.GetContext().delete(r)
-                                GlobalInst.SaveContext()
-                            })
-                            .onTapGesture {
-                                withAnimation {
-                                    if trainingIDTapped == r.trainingID {
-                                        trainingIDTapped = 0
-                                    } else {
-                                        trainingIDTapped = r.trainingID
-                                    }
-                                }
-                            }
+                    StatisticRowView(training: r)
                 }
             }
         }
@@ -41,7 +25,7 @@ struct StatisticView : View {
 
 struct StatisticRowView : View {
     @ObservedObject var training : Training
-    @Binding var selectedTrainingID: Int64
+    @State var selected: Bool = false
 
     var body : some View {
         VStack {
@@ -53,7 +37,7 @@ struct StatisticRowView : View {
                 }
             }
             Spacer()
-            if selectedTrainingID != training.trainingID {
+            if !selected {
                 HStack {
                     Spacer()
                     ForEach(getExerciseList()) { et in
@@ -65,13 +49,19 @@ struct StatisticRowView : View {
                     }
                 }
             }
-            if selectedTrainingID == training.trainingID && training.recordList != nil {
+            if training.recordList != nil && selected {
                 ForEach(training.recordList!) { r in
                     StatisticRecordRowView(r: r)
                 }
             }
         }
                 .padding(4)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    withAnimation {
+                        selected.toggle()
+                    }
+                }
     }
 
     private func getExerciseList() -> [ExerciseType] {

@@ -18,6 +18,9 @@ struct Global {
     // theme
     let green = Color.init("eGreen")
     let red = Color.init("eRed")
+
+    // global counter
+    var counter: Int64
 }
 
 extension Global {
@@ -37,8 +40,10 @@ extension Global {
         Int64(Date().timeIntervalSince1970)
     }
 
-    func GetNanosecondTimestamp() -> Int64 {
-        Int64(Date().timeIntervalSince1970 * 1000000)
+    mutating func GetAutoIncrementID() -> Int64 {
+        let tmp = counter
+        counter = counter + 1
+        return tmp
     }
 
     // common
@@ -59,4 +64,4 @@ struct Config {
     var WeightUnit: String
 }
 
-let GlobalInst = Global()
+var GlobalInst = Global(counter: Int64(Date().timeIntervalSince1970))
