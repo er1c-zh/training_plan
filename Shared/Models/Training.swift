@@ -88,6 +88,7 @@ enum RecordStatus: Int {
     case statusDone = 2;
     case statusCanceled = 3;
     case statusTemplate = 4;
+    case statusDeleted = 5;
 }
 
 extension Training {

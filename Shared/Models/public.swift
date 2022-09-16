@@ -64,4 +64,4 @@ struct Config {
     var WeightUnit: String
 }
 
-var GlobalInst = Global(counter: Int64(Date().timeIntervalSince1970))
+var GlobalInst = Global(counter: Int64(Date().timeIntervalSince1970 * 1000000))

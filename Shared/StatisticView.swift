@@ -13,9 +13,19 @@ struct StatisticView : View {
     var body : some View {
         List {
             Section(NSLocalizedString("title_record", comment: "")) {
-                ForEach(trainingList) { r in
-                    StatisticRowView(training: r)
+                ForEach(trainingList) { t in
+                    NavigationLink(destination: StatisticTrainingDetailView(t: t)) {
+                        StatisticRowView(training: t)
+                    }
                 }
+                        .onDelete { indies in
+                            withAnimation {
+                                for i in indies {
+                                    trainingList[i].status = Int16(RecordStatus.statusDeleted.rawValue)
+                                }
+                                GlobalInst.SaveContext()
+                            }
+                        }
             }
         }
                 .navigationBarTitle(NSLocalizedString("statistic_title", comment: ""), displayMode: .inline)
@@ -25,50 +35,36 @@ struct StatisticView : View {
 
 struct StatisticRowView : View {
     @ObservedObject var training : Training
-    @State var selected: Bool = false
 
     var body : some View {
         VStack {
             HStack {
-                Text(getDate())
-                Spacer()
                 if training.status == RecordStatus.statusDoing.rawValue {
                     Text(NSLocalizedString("title_doing", comment: ""))
+                } else {
+                    Text(getDate())
+                }
+                Spacer()
+                ForEach(getExerciseList()) { et in
+                    ExerciseLabel(text: et.Desc())
                 }
             }
-
-            if !selected {
-                HStack {
-                    Spacer()
-                    ForEach(getExerciseList()) { et in
-                        ExerciseLabel(text: et.Desc())
-                    }
-                }
-            }
-            if selected {
-                ForEach(getGroupedRecord()) { g in
-                    HStack {
-                        ExerciseLabel(text: g.et.Desc())
-                        Spacer()
-                    }
-                    ForEach(g.data) { r in
-                        StatisticRecordRowView(r: r)
-                    }
-                }
-            }
+            // if selected {
+            //     ForEach(getGroupedRecord()) { g in
+            //         HStack {
+            //             ExerciseLabel(text: g.et.Desc())
+            //             Spacer()
+            //         }
+            //         ForEach(g.data) { r in
+            //             StatisticRecordRowView(r: r)
+            //         }
+            //     }
+            // }
         }
                 .padding(4)
                 .contentShape(Rectangle())
-                .onTapGesture {
-                    withAnimation {
-                        selected.toggle()
-                    }
-                }
     }
 
-    private func getGroupedRecord() -> [Training.RecordGroup] {
-        training.getGroupedRecord()
-    }
 
     private func getExerciseList() -> [ExerciseType] {
         var result : [ExerciseType] = []
@@ -102,6 +98,25 @@ struct StatisticRowView : View {
             }
         }
         return s
+    }
+}
+
+struct StatisticTrainingDetailView : View {
+    @ObservedObject var t : Training
+    var body : some View {
+        List {
+            ForEach(getGroupedRecord()) { g in
+                Section(g.et.Desc()) {
+                    ForEach(g.data) { r in
+                        StatisticRecordRowView(r: r)
+                    }
+                }
+            }
+        }
+    }
+
+    private func getGroupedRecord() -> [Training.RecordGroup] {
+        t.getGroupedRecord()
     }
 }
 
