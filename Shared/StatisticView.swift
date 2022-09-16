@@ -36,22 +36,24 @@ struct StatisticRowView : View {
                     Text(NSLocalizedString("title_doing", comment: ""))
                 }
             }
-            Spacer()
+
             if !selected {
                 HStack {
                     Spacer()
                     ForEach(getExerciseList()) { et in
-                        Text(et.Desc())
-                                .font(.system(.footnote))
-                                .padding(2)
-                                .background(RoundedRectangle(cornerRadius: 4).stroke())
-                                .foregroundColor(Color.init(UIColor.secondaryLabel))
+                        ExerciseLabel(text: et.Desc())
                     }
                 }
             }
-            if training.recordList != nil && selected {
-                ForEach(training.recordList!) { r in
-                    StatisticRecordRowView(r: r)
+            if selected {
+                ForEach(getGroupedRecord()) { g in
+                    HStack {
+                        ExerciseLabel(text: g.et.Desc())
+                        Spacer()
+                    }
+                    ForEach(g.data) { r in
+                        StatisticRecordRowView(r: r)
+                    }
                 }
             }
         }
@@ -62,6 +64,10 @@ struct StatisticRowView : View {
                         selected.toggle()
                     }
                 }
+    }
+
+    private func getGroupedRecord() -> [Training.RecordGroup] {
+        training.getGroupedRecord()
     }
 
     private func getExerciseList() -> [ExerciseType] {
@@ -131,11 +137,25 @@ struct StatisticRecordRowView : View {
         if from == "-" && to == "-" {
             return "-"
         }
-        return String(format: "%@ +%d%@", from, r.finishTimestamp - r.startTimestamp, NSLocalizedString("rest_between_sets_unit", comment: ""))
+        return String(format: "%d%@ %@", r.finishTimestamp - r.startTimestamp, NSLocalizedString("rest_between_sets_unit", comment: ""), from)
     }
 
     private func format() -> String {
-        let tmp = ExerciseType.descByVal(val: r.exerciseType)
-        return String(format: "%@ %.1fkg * %d", tmp, r.weight, r.rep)
+        var suf = " "
+        if r.weight < 100 {
+            suf = "  "
+        }
+        return String(format: "%.1fkg%@ *   %d", r.weight, suf, r.rep)
+    }
+}
+
+struct ExerciseLabel: View {
+    @State var text: String
+    var body : some View {
+        Text(text)
+                .font(.system(.footnote))
+                .padding(2)
+                .background(RoundedRectangle(cornerRadius: 4).stroke())
+                .foregroundColor(Color.init(UIColor.secondaryLabel))
     }
 }

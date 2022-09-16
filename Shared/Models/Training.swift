@@ -134,6 +134,38 @@ extension Training {
         return d
     }
 
+    struct RecordGroup : Identifiable{
+        var id: Int {idx}
+        var idx : Int
+        var et : ExerciseType
+        var data: [Record]
+    }
+
+    func getGroupedRecord() -> [RecordGroup] {
+        var gl : [RecordGroup] = []
+
+        if let recordList = recordList {
+            var i = 0
+            var g : RecordGroup?
+            while i < recordList.count {
+                let r = recordList[i]
+                if g == nil {
+                    g = RecordGroup(idx: i, et: ExerciseType.init(rawValue: r.exerciseType)!, data: [])
+                } else if g!.et.rawValue != r.exerciseType {
+                    gl.append(g!)
+                    g = RecordGroup(idx: i, et: ExerciseType.init(rawValue: r.exerciseType)!, data: [])
+                }
+                g!.data.append(r)
+                i += 1
+            }
+            if let g = g {
+                gl.append(g)
+            }
+        }
+
+        return gl
+    }
+
     func update(from data : Data) {
         var dicRecordID2RecordData: [Int64: Record.Data] = [:]
         data.recordList.forEach { rd in
