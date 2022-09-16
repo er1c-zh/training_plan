@@ -201,7 +201,7 @@ extension Training {
         versionID = GlobalInst.GetAutoIncrementID()
     }
 
-    static func getDoingTraining() -> Training {
+    static func getDoingTraining(forceInit : Bool) -> Training {
         let fr = NSFetchRequest<Training>()
         fr.entity = Training.entity()
         fr.fetchLimit = 1
@@ -213,7 +213,19 @@ extension Training {
         do {
             let result = try GlobalInst.GetContext().fetch(fr)
             if result.count > 0 {
-                return result[0]
+                if result[0].status != RecordStatus.statusDone.rawValue {
+                    return result[0]
+                }
+                if !forceInit {
+                    if let first = result[0].recordList?.first {
+                        let date = Date.init(timeIntervalSince1970: TimeInterval(first.startTimestamp))
+                        let f = DateFormatter()
+                        f.dateFormat = "yyyy-MM-dd"
+                        if f.string(from: date) == f.string(from: Date()) {
+                            return result[0]
+                        }
+                    }
+                }
             }
         } catch {
             GlobalInst.logger.error("getDoingTraining fail")

@@ -29,6 +29,14 @@ struct DebugView : View {
                                 GlobalInst.logger.info("\(t)")
                             }
                 }
+                NavigationLink(destination: TrainingEditorView(training: Training.getDoingTraining(forceInit: true))) {
+                    Text(NSLocalizedString("create_training", comment: ""))
+                            .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
+                            .foregroundColor(Color.init(UIColor.systemBackground))
+                            .background(GlobalInst.green)
+                            .clipShape(Circle())
+                            .font(.title2.bold())
+                }
             }
         }
                 .navigationTitle("Debug tools")

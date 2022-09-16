@@ -11,7 +11,7 @@ import CoreData
 
 struct MainView: View {
     @State private var selection = 1
-    @ObservedObject private var training: Training = Training.getDoingTraining()
+    @ObservedObject private var training: Training = Training.getDoingTraining(forceInit: false)
 
     var body: some View {
         TabView(selection: $selection) {
