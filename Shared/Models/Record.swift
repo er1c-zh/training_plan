@@ -95,6 +95,25 @@ extension Record {
         }
     }
 
+    static func getLastDoneRecordByExerciseType(et: ExerciseType) -> Record? {
+        let fr = NSFetchRequest<Record>()
+        fr.entity = Record.entity()
+        fr.predicate = NSPredicate(format: "exerciseType == %d AND status == %d",
+                et.rawValue, RecordStatus.statusDone.rawValue)
+        fr.fetchLimit = 1
+        fr.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Record.recordID, ascending: false),
+        ]
+        do {
+            let context = PersistenceController.shared.container.viewContext
+            let result = try context.fetch(fr)
+            return result.first
+        } catch {
+            GlobalInst.logger.error("getLastDoneRecordByExerciseType fail")
+            return nil
+        }
+    }
+
     static func getLastDoneFormalRecordByExerciseType(et: ExerciseType) -> Record? {
         let fr = NSFetchRequest<Record>()
         fr.entity = Record.entity()

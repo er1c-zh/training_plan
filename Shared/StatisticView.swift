@@ -22,6 +22,9 @@ struct StatisticView : View {
                             withAnimation {
                                 for i in indies {
                                     trainingList[i].status = Int16(RecordStatus.statusDeleted.rawValue)
+                                    for r in trainingList[i].recordList! {
+                                        r.status = Int16(RecordStatus.statusDeleted.rawValue)
+                                    }
                                 }
                                 GlobalInst.SaveContext()
                             }

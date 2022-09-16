@@ -12,6 +12,8 @@ struct Generator {
             var latest: Record?
             if let doneRecord = Record.getLastDoneFormalRecordByExerciseType(et: et) {
                 latest = doneRecord
+            } else if let doneRecord = Record.getLastDoneRecordByExerciseType(et: et){
+                latest = doneRecord
             } else {
                 if let l = Training.getStrategy().recordList {
                     for r in l {
@@ -37,6 +39,7 @@ struct Generator {
                 tmp.weight = curWeight
                 tmp.restInSec = Int64(15 * (cntWarmUp + 1))
                 tmp.rep = 5
+                tmp.type = Int16(RecordType.typeWarmup.rawValue)
                 curL.append(tmp)
 
                 cntWarmUp += 1
@@ -51,6 +54,7 @@ struct Generator {
                 tmp.weight = max
                 tmp.restInSec = 120
                 tmp.rep = 5
+                tmp.type = Int16(RecordType.typeFormal.rawValue)
                 curL.append(tmp)
                 cntFormal += 1
             }
