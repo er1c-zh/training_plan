@@ -29,7 +29,7 @@ struct DebugView : View {
                                 GlobalInst.logger.info("\(t)")
                             }
                 }
-                NavigationLink(destination: TrainingEditorView(training: Training.getDoingTraining(forceInit: true))) {
+                NavigationLink(destination: TrainingEditorView(training: Training.getDoingTraining())) {
                     Text(NSLocalizedString("create_training", comment: ""))
                             .frame(width: GlobalInst.GetBtnSize(), height: GlobalInst.GetBtnSize())
                             .foregroundColor(Color.init(UIColor.systemBackground))

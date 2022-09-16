@@ -21,7 +21,7 @@
 "start_record" = "开始";
 "finish_record" = "完成";
 "inspire" = "今天不练？";
-"congratulations" = "今天练了！";
+"congratulations" = "今天练了";
 "rest_end" = "组间休息结束";
 
 // TrainingEditor

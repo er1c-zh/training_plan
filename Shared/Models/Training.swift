@@ -202,31 +202,53 @@ extension Training {
         versionID = GlobalInst.GetAutoIncrementID()
     }
 
-    static func getDoingTraining(forceInit : Bool) -> Training {
+    static func getLastTodayTraining() -> Training {
         let fr = NSFetchRequest<Training>()
         fr.entity = Training.entity()
         fr.fetchLimit = 1
-        fr.predicate = NSPredicate(format: "status == %d || status == %d || status == %d",
-                RecordStatus.statusDoing.rawValue, RecordStatus.statusInit.rawValue, RecordStatus.statusDone.rawValue)
+        fr.predicate = NSPredicate(format: "status == %d || status == %d",
+                RecordStatus.statusDoing.rawValue, RecordStatus.statusDone.rawValue)
         fr.sortDescriptors = [
             NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
         ]
         do {
             let result = try GlobalInst.GetContext().fetch(fr)
-            if result.count > 0 {
-                if result[0].status != RecordStatus.statusDone.rawValue {
-                    return result[0]
+            if let t = result.first {
+                if t.status == RecordStatus.statusDoing.rawValue {
+                    return t
                 }
-                if !forceInit {
-                    if let first = result[0].recordList?.first {
-                        let date = Date.init(timeIntervalSince1970: TimeInterval(first.startTimestamp))
-                        let f = DateFormatter()
-                        f.dateFormat = "yyyy-MM-dd"
-                        if f.string(from: date) == f.string(from: Date()) {
-                            return result[0]
-                        }
-                    }
+            }
+            if let t = result.first, let r = t.recordList?.first {
+                let date = Date.init(timeIntervalSince1970: TimeInterval(r.startTimestamp))
+                let f = DateFormatter()
+                f.dateFormat = "yyyy-MM-dd"
+                if f.string(from: date) == f.string(from: Date()) {
+                    // If found a today done training, return it
+                    return t
                 }
+            }
+        } catch {
+            GlobalInst.logger.error("getDoingTraining fail")
+        }
+        let new = Training.init(context: GlobalInst.GetContext())
+        new.status = Int16(RecordStatus.statusInit.rawValue)
+        new.trainingID = GlobalInst.GetAutoIncrementID()
+        return new
+    }
+
+    static func getDoingTraining() -> Training {
+        let fr = NSFetchRequest<Training>()
+        fr.entity = Training.entity()
+        fr.fetchLimit = 1
+        fr.predicate = NSPredicate(format: "status == %d || status == %d",
+                RecordStatus.statusDoing.rawValue, RecordStatus.statusInit.rawValue)
+        fr.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Training.trainingID, ascending: false)
+        ]
+        do {
+            let result = try GlobalInst.GetContext().fetch(fr)
+            if let t = result.first {
+                return t
             }
         } catch {
             GlobalInst.logger.error("getDoingTraining fail")

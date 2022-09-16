@@ -11,7 +11,8 @@ import CoreData
 
 struct MainView: View {
     @State private var selection = 1
-    @ObservedObject private var training: Training = Training.getDoingTraining(forceInit: false)
+    @ObservedObject private var lastTraining: Training = Training.getLastTodayTraining()
+    @ObservedObject private var training: Training = Training.getDoingTraining()
 
     var body: some View {
         TabView(selection: $selection) {
@@ -25,20 +26,23 @@ struct MainView: View {
                     .tag(0)
 
             // Today
-
             NavigationView {
                 VStack {
                     if training.status != RecordStatus.statusInit.rawValue {
                         TrainingPreviewView(data: training.data)
                                 .padding(32)
+                    } else if lastTraining.status != RecordStatus.statusInit.rawValue {
+                        TrainingPreviewView(data: lastTraining.data)
+                                .padding(32)
                     }
 
                     Spacer()
-
+                    if training.status != RecordStatus.statusDoing.rawValue && lastTraining.status == RecordStatus.statusDone.rawValue {
+                        Text(NSLocalizedString("congratulations", comment: ""))
+                        Spacer()
+                    }
                     HStack {
-                        if training.status == RecordStatus.statusDone.rawValue {
-                            Text(NSLocalizedString("congratulations", comment: ""))
-                        } else if training.status != RecordStatus.statusInit.rawValue {
+                        if training.status == RecordStatus.statusDoing.rawValue {
                             Spacer()
                             Button(action: {
                                 withAnimation {
