@@ -289,11 +289,13 @@ struct MultipleExerciseTypePickerView: View {
                         }
                     }
                     Spacer()
-                    Text("两天前")
-                            .font(.system(.footnote))
-                            .padding(2)
-                            .background(RoundedRectangle(cornerRadius: 4).stroke())
-                            .foregroundColor(Color.init(UIColor.secondaryLabel))
+                    if getLastRecordDate(et: t.ExerciseType) != "" {
+                        Text(getLastRecordDate(et: t.ExerciseType))
+                                .font(.system(.footnote))
+                                .padding(2)
+                                .background(RoundedRectangle(cornerRadius: 4).stroke())
+                                .foregroundColor(Color.init(UIColor.secondaryLabel))
+                    }
                     if getIndex(e: t) >= 0 {
                         Text(String(format: "%d", getIndex(e: t) + 1))
                                 .padding(4)
@@ -342,5 +344,24 @@ struct MultipleExerciseTypePickerView: View {
             i += 1
         }
         return -1
+    }
+
+    func getLastRecordDate(et: ExerciseType) -> String {
+        let r = Record.getLastDoneRecordByExerciseType(et: et)
+        if let r = r {
+            let calendar = NSCalendar.current
+
+            // Replace the hour (time) of both dates with 00:00
+            let date1 = calendar.startOfDay(for: Date.init(timeIntervalSince1970: TimeInterval(r.startTimestamp)))
+            let date2 = calendar.startOfDay(for: Date())
+            let components = calendar.dateComponents([.day], from: date1, to: date2)
+            if let countOfDayFromLastRecord = components.day {
+                if countOfDayFromLastRecord == 0 {
+                    return "今天"
+                }
+                return String(format: "%d天前", countOfDayFromLastRecord)
+            }
+        }
+        return ""
     }
 }
